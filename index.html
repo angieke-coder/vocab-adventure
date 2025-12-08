@@ -750,8 +750,8 @@
         let playerLevel = 1;
         let playerInventory = {}; // { id: { quantity: N, isOnSale: true, cost: C } }
         const levelThresholds = [1000, 3000, 6000, 12000, 20000]; 
-        const priceMultiplier = (level) => 1 + (level - 1) * 0.2; 
-        const costMultiplier = (level) => 1 + (level - 1) * 0.4; 
+        const priceMultiplier = (level) => 1 + (level - 1) * 0.05;
+        const costMultiplier = (level) => 1 + (level - 1) * 0.5;
 
         // Progress and State
         let completedStages = {}; 
@@ -769,7 +769,7 @@
         const totalStage3Words = 10; 
 
         // Timer
-        const BASE_CUSTOMER_INTERVAL = 25000; 
+        const BASE_CUSTOMER_INTERVAL = 40000; 
         let customerTimer = null; 
 
         // **SFX Setup (unchanged)**
@@ -1042,16 +1042,16 @@
             }
             return totalMultiplier;
         }
-
+    
         function getItemPrice(item) {
-            const levelMultiplier = priceMultiplier(playerLevel);
-            const facilityMultiplier = getFacilityPriceMultiplier();
+            const levelMultiplier = 0.5 + (playerLevel - 1) * 0.05;  
+            const facilityMultiplier = 1;
             
             return Math.floor(item.basePrice * levelMultiplier * facilityMultiplier);
         }
 
         function getItemCost(item) {
-            const levelMultiplier = costMultiplier(playerLevel);
+            const levelMultiplier = 1 + (playerLevel - 1) * 0.8;  // 成本成長變快
             return Math.floor(item.baseCost * levelMultiplier);
         }
         
@@ -1473,6 +1473,7 @@
 
                     if (typedWord === word) {
                         playSFX('correct');
+                        updateScore(80);
                         messageBox.textContent = `✅ Correct! Word '${word}' completed.`;
                         inputElement.classList.add('bg-green-200');
                         document.getElementById('check-button').disabled = true;
@@ -1592,7 +1593,7 @@
                 
                 if (card1.dataset.matchId === card2.dataset.matchId) {
                     playSFX('correct');
-                    updateScore(50); 
+                    updateScore(20); 
                     messageBox.textContent = `⚡️ Match Success: ${card1.dataset.matchId.toLowerCase()}! Coins +50!`;
                     
                     setTimeout(() => {
@@ -1712,7 +1713,7 @@
 
                 if (isMatch) {
                     playSFX('correct');
-                    updateScore(100); 
+                    updateScore(60); 
                     messageBox.textContent = `⭐️ Perfect Match! ${card1.dataset.matchId.toLowerCase()}! Coins +100!`;
                     setTimeout(() => {
                         card1.classList.add('matched');
@@ -1869,7 +1870,7 @@
 
             if (userWord === correctWord) {
                 playSFX('correct');
-                updateScore(200); 
+                updateScore(40); 
                 messageBox.textContent = `🎉 Correct! Word: ${correctWord.toLowerCase()}! Coins +200! (Next word in 2s)`;
                 
                 document.querySelectorAll('#answer-area .letter-slot').forEach(slot => {
