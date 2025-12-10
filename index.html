@@ -871,6 +871,69 @@
             }
             return false;
         }
+        // ===================================================
+        // 📌 DAILY RESET + PLAY COUNT + REWARD SYSTEM
+        // ===================================================
+        
+        // Load or initialize progress
+        let vocabData = JSON.parse(localStorage.getItem("vocabDailySystem")) || {
+            lastResetDate: "",
+            stageCounts: { stage1: 0, stage2: 0, stage3: 0, stage4: 0 },
+            todayCounts: { stage1: 0, stage2: 0, stage3: 0, stage4: 0 }
+        };
+        
+        // 🔄 Daily reset at first load
+        function checkDailyReset() {
+            const today = new Date().toDateString();
+            if (vocabData.lastResetDate !== today) {
+                vocabData.lastResetDate = today;
+        
+                // Reset today counters
+                vocabData.todayCounts = { stage1: 0, stage2: 0, stage3: 0, stage4: 0 };
+        
+                // Reset stage checkmarks (your UI part)
+                document.querySelectorAll(".stage-checkmark").forEach(el => el.style.visibility = "hidden");
+        
+                saveVocabData();
+                showMessage("🌞 新的一天！所有單字關卡已重置！");
+            }
+        }
+        
+        // Save to localStorage
+        function saveVocabData() {
+            localStorage.setItem("vocabDailySystem", JSON.stringify(vocabData));
+        }
+        
+        // 🎁 Rewards logic (Alan-friendly)
+        function checkRewards(stage) {
+            const count = vocabData.todayCounts[stage];
+        
+            let reward = 0;
+        
+            if (count % 10 === 0) reward += 150;
+            if (count % 5 === 0) reward += 60;
+            if (count % 3 === 0) reward += 30;
+        
+            if (reward > 0) {
+                currentScore += reward;
+                updateScore(0);
+                showMessage(`🎉 太棒了！你今天在 ${stage.toUpperCase()} 已經玩了 ${count} 次！獎勵 +${reward} coins！`);
+            }
+        }
+        
+        // Call this when a stage is completed
+        function recordStageCompletion(stageId) {
+            // Increase daily count
+            vocabData.todayCounts[stageId]++;
+            // Increase lifetime count
+            vocabData.stageCounts[stageId]++;
+        
+            checkRewards(stageId);
+            saveVocabData();
+        }
+        
+        // 初始化
+        checkDailyReset();
 
         function updateScore(points) {
             currentScore += points;
@@ -1608,6 +1671,7 @@ setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
 
                  if (currentMatchedIds.length === targetMatches) {
                     setStageCompleted(currentWeek, 1);
+                    recordStageCompletion("stage1");
                     messageBox.textContent = `🎉 Week ${currentWeek} Stage 1 Complete!`;
                     updateUI();
                  }
@@ -1725,6 +1789,7 @@ setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
 
                 if (matchedCount === targetWordsCount) {
                     setStageCompleted(currentWeek, 2);
+                    recordStageCompletion("stage2");
                     messageBox.textContent = `🏆 Week ${currentWeek} Stage 2 Complete!`;
                     updateUI();
                 }
@@ -1816,6 +1881,7 @@ setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
         function loadNextStage3Word() {
             if (currentWordIndex >= totalStage3Words) {
                 setStageCompleted(currentWeek, 3);
+                recordStageCompletion("stage3"); 
                 
                 if (isWeekCompleted(currentWeek)) {
                     messageBox.textContent = `🏆 CONGRATS! You finished all challenges for Week ${currentWeek}! Next week unlocked!`;
