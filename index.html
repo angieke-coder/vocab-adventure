@@ -700,14 +700,15 @@
         // --- Shop Facility Upgrade Data ---
         const facilityUpgrades = [
             { id: 'ad_board', name: 'Promo Board', icon: '📣', maxLevel: 3, description: 'Speeds up customer arrival', levels: [
-                { cost: 500, interval_reduction: 3000, display: '-3s (22s)' },
-                { cost: 1500, interval_reduction: 8000, display: '-8s (17s)' },
-                { cost: 3000, interval_reduction: 15000, display: '-15s (10s)' },
+                { cost: 50000, interval_reduction: 3000, display: '-2s' },
+                { cost: 100000, interval_reduction: 5000, display: '-5s' },
+                { cost: 150000, interval_reduction: 8000, display: '-8s' },
+                { cost: 300000, interval_reduction: 15000, display: '-15s' },
             ]},
             { id: 'reg_boost', name: 'Pro Kitchen', icon: '🔪', maxLevel: 3, description: 'Permanently increases product selling price', levels: [
-                { cost: 800, price_multiplier: 0.1, display: '+10% Price' },
-                { cost: 2000, price_multiplier: 0.25, display: '+25% Price' },
-                { cost: 4500, price_multiplier: 0.5, display: '+50% Price' },
+                { cost: 80000, price_multiplier: 0.1, display: '+10% Price' },
+                { cost: 200000, price_multiplier: 0.25, display: '+25% Price' },
+                { cost: 450000, price_multiplier: 0.5, display: '+50% Price' },
             ]},
         ];
 
@@ -722,18 +723,18 @@
             2: [
                 "價格公道，服務迅速，下次再來！",
                 "哇！這太棒了，完全值這些金幣！",
-                "這[item.name]做得很用心！有家的味道！",
+                "這做得很用心！有家的味道！",
                 "我很滿意，期待你的店鋪能進更多貨。",
             ],
             3: [
-                "L3 賣家就是不一樣！品質優越，我會推薦給朋友！",
+                "L3賣家就是不一樣！品質優越，我會推薦給朋友！",
                 "太有效率了！我趕時間，你幫大忙了，謝謝！",
                 "這是目前我在這條街上買過最棒的速食！⭐️⭐️⭐️⭐️⭐️",
                 "你的店鋪很有潛力，恭喜你升級了！",
             ],
             4: [
                 "品質沒話說，雖然價格高，但我付得起！繼續保持水準！",
-                "這[item.name]跑遊戲簡直飛快，我太滿意了！",
+                "這跑遊戲簡直飛快，我太滿意了！",
                 "你的經營頭腦真是驚人，繼續進貨好東西吧！",
                 "交易順利！你正在成為這條街上最棒的速食大亨！"
             ]
@@ -749,7 +750,7 @@
         let currentScore = 0; // Coins
         let playerLevel = 1;
         let playerInventory = {}; // { id: { quantity: N, isOnSale: true, cost: C } }
-        const levelThresholds = [4000, 9000, 18000, 30000, 60000]; 
+        const levelThresholds = [40000, 90000, 180000, 300000, 600000]; 
         const priceMultiplier = (level) => 1 + (level - 1) * 0.05;
         const costMultiplier = (level) => 1 + (level - 1) * 0.5;
 
@@ -1246,6 +1247,63 @@
             }
             renderShop();
         }
+
+        // ========== Maintenance Cost System (Story Version) ==========
+
+// 每 5 分鐘扣一次維修費
+const MAINTENANCE_INTERVAL = 300000;
+
+// 設備與劇情（壞掉原因）
+const FACILITIES = [
+    { 
+        name: "炸鍋 Fryer", 
+        icon: "🍳",
+        reason: "因為連續炸了好多份薯條，結果過熱停機了！"
+    },
+    { 
+        name: "飲料機 Soda Machine", 
+        icon: "🥤",
+        reason: "因為裡面的糖漿太久沒清理，整個堵住了！"
+    },
+    { 
+        name: "烤盤 Grill", 
+        icon: "🍔",
+        reason: "因為油垢累積太多，需要大清潔！"
+    },
+    { 
+        name: "點單機 Order Terminal", 
+        icon: "🖥️",
+        reason: "因為系統更新失敗，只剩藍色畫面了…"
+    },
+    { 
+        name: "咖啡機 Coffee Brewer", 
+        icon: "☕",
+        reason: "因為缺水太久整個當掉啦！"
+    }
+];
+
+// 基礎維修費（可調整）
+const BASE_MAINTENANCE_COST = 40;
+
+function applyMaintenanceCost() {
+    // 隨機挑壞掉設備
+    const facility = FACILITIES[Math.floor(Math.random() * FACILITIES.length)];
+
+    // 隨等級提升維修費（約 40–150）
+    const cost = Math.floor(BASE_MAINTENANCE_COST * (1 + playerLevel * 0.3));
+
+    if (currentScore >= cost) {
+        currentScore -= cost;
+        updateScore(0);
+
+        showMessage(`⚠️ ${facility.icon} 你的 ${facility.name} 壞掉了！${facility.reason} 需要維修：-${cost} coins`);
+    } else {
+        showMessage(`⚠️ ${facility.icon} ${facility.name} 壞掉了，但你沒有足夠的錢！快去練單字賺錢補上維修費！`);
+    }
+}
+
+// 啟動維修定時器
+setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
 
 
         function renderShop() {
