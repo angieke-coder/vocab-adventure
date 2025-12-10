@@ -678,19 +678,19 @@
             { id: 'lettuce', name: 'Lettuce', icon: '🥬', baseCost: 15, type: 'ingredient' },
             { id: 'milk', name: 'Milk', icon: '🥛', baseCost: 20, type: 'ingredient' },
             { id: 'icecream_base', name: 'Ice Cream Base', icon: '🍦', baseCost: 40, type: 'ingredient' },
-            { id: 'chicken', name: 'Chicken Pieces', icon: '🐔', baseCost: 40, type: 'ingredient' },
+            { id: 'chicken', name: 'Chicken Pieces', icon: '🐔', baseCost: 30, type: 'ingredient' },
             { id: 'hotdog_bun', name: 'Hot Dog Bun', icon: '🥖', baseCost: 35, type: 'ingredient' },
-            { id: 'sausage', name: 'Sausage', icon: '🌭', baseCost: 45, type: 'ingredient' },
+            { id: 'sausage', name: 'Sausage', icon: '🌭', baseCost: 35, type: 'ingredient' },
             { id: 'sauce', name: 'Sauce Packet', icon: '🥫', baseCost: 20, type: 'ingredient' },
-            { id: 'dough', name: 'Pizza Dough', icon: '🫓', baseCost: 60, type: 'ingredient' },
-            { id: 'cheese', name: 'Cheese', icon: '🧀', baseCost: 35, type: 'ingredient' },
+            { id: 'dough', name: 'Pizza Dough', icon: '🫓', baseCost: 50, type: 'ingredient' },
+            { id: 'cheese', name: 'Cheese', icon: '🧀', baseCost: 30, type: 'ingredient' },
             { id: 'tomato_sauce', name: 'Tomato Sauce', icon: '🍅', baseCost: 30, type: 'ingredient' },
             { id: 'syrup', name: 'Sundae Syrup', icon: '🍯', baseCost: 40, type: 'ingredient' },
             { id: 'dressing', name: 'Salad Dressing', icon: '🍾', baseCost: 30, type: 'ingredient' },
             { id: 'coffee_bean', name: 'Coffee Beans', icon: '☕', baseCost: 50, type: 'ingredient' },
             { id: 'tortilla', name: 'Tortilla', icon: '🌮', baseCost: 50, type: 'ingredient' },
-            { id: 'rice', name: 'Sushi Rice', icon: '🍚', baseCost: 60, type: 'ingredient' },
-            { id: 'fish', name: 'Fish Fillet', icon: '🐟', baseCost: 80, type: 'ingredient' },
+            { id: 'rice', name: 'Sushi Rice', icon: '🍚', baseCost: 40, type: 'ingredient' },
+            { id: 'fish', name: 'Fish Fillet', icon: '🐟', baseCost: 60, type: 'ingredient' },
         ];
         
         // Combined list for easy lookup
@@ -750,7 +750,7 @@
         let currentScore = 0; // Coins
         let playerLevel = 1;
         let playerInventory = {}; // { id: { quantity: N, isOnSale: true, cost: C } }
-        const levelThresholds = [40000, 90000, 180000, 300000, 600000]; 
+        const levelThresholds = [4000, 9000, 18000, 30000, 60000]; 
         const priceMultiplier = (level) => 1 + (level - 1) * 0.05;
         const costMultiplier = (level) => 1 + (level - 1) * 0.5;
 
