@@ -644,26 +644,26 @@
         // 成品列表 (Final Products)
         const products = [
             // L1 基礎商品
-            { id: 'fries', name: 'Fries', icon: '🍟', basePrice: 100, requiredLevel: 1, type: 'product', recipe: { potato: 1, oil: 1, salt: 1 } },
-            { id: 'cola', name: 'Cola', icon: '🥤', basePrice: 140, requiredLevel: 1, type: 'product', recipe: { soda: 1, ice: 1 } },
-            { id: 'burger', name: 'Burger', icon: '🍔', basePrice: 240, requiredLevel: 1, type: 'product', recipe: { bun: 2, beef: 1, lettuce: 1 } },
-            { id: 'milkshake', name: 'Milkshake', icon: '🥛', basePrice: 360, requiredLevel: 1, type: 'product', recipe: { milk: 1, icecream_base: 1 } },
+            { id: 'fries', name: 'Fries', icon: '🍟', basePrice: 40, requiredLevel: 1, type: 'product', recipe: { potato: 1, oil: 1, salt: 1 } },
+            { id: 'cola', name: 'Cola', icon: '🥤', basePrice: 30, requiredLevel: 1, type: 'product', recipe: { soda: 1, ice: 1 } },
+            { id: 'burger', name: 'Burger', icon: '🍔', basePrice: 50, requiredLevel: 1, type: 'product', recipe: { bun: 2, beef: 1, lettuce: 1 } },
+            { id: 'milkshake', name: 'Milkshake', icon: '🥛', basePrice: 35, requiredLevel: 1, type: 'product', recipe: { milk: 1, icecream_base: 1 } },
             
             // L2 解鎖商品 (1000 金幣)
-            { id: 'nuggets', name: 'Nuggets', icon: '🍗', basePrice: 600, requiredLevel: 2, type: 'product', recipe: { chicken: 2, oil: 1, salt: 1 } },
-            { id: 'hotdog', name: 'Hot Dog', icon: '🌭', basePrice: 800, requiredLevel: 2, type: 'product', recipe: { hotdog_bun: 1, sausage: 1, sauce: 1 } },
+            { id: 'nuggets', name: 'Nuggets', icon: '🍗', basePrice: 55, requiredLevel: 2, type: 'product', recipe: { chicken: 2, oil: 1, salt: 1 } },
+            { id: 'hotdog', name: 'Hot Dog', icon: '🌭', basePrice: 60, requiredLevel: 2, type: 'product', recipe: { hotdog_bun: 1, sausage: 1, sauce: 1 } },
             
             // L3 解鎖商品 (3000 金幣)
-            { id: 'pizza', name: 'Pizza', icon: '🍕', basePrice: 1300, requiredLevel: 3, type: 'product', recipe: { dough: 1, cheese: 1, tomato_sauce: 1 } },
-            { id: 'icecream', name: 'Ice Cream Sundae', icon: '🍦', basePrice: 1500, requiredLevel: 3, type: 'product', recipe: { icecream_base: 2, syrup: 1 } },
+            { id: 'pizza', name: 'Pizza', icon: '🍕', basePrice: 100, requiredLevel: 3, type: 'product', recipe: { dough: 1, cheese: 1, tomato_sauce: 1 } },
+            { id: 'icecream', name: 'Ice Cream Sundae', icon: '🍦', basePrice: 60, requiredLevel: 3, type: 'product', recipe: { icecream_base: 2, syrup: 1 } },
 
             // L4 解鎖商品 (6000 金幣)
-            { id: 'salad', name: 'Salad', icon: '🥗', basePrice: 2000, requiredLevel: 4, type: 'product', recipe: { lettuce: 2, dressing: 1, chicken: 1 } },
-            { id: 'coffee', name: 'Coffee', icon: '☕', basePrice: 3000, requiredLevel: 4, type: 'product', recipe: { coffee_bean: 1, milk: 1 } },
+            { id: 'salad', name: 'Salad', icon: '🥗', basePrice: 80, requiredLevel: 4, type: 'product', recipe: { lettuce: 2, dressing: 1, chicken: 1 } },
+            { id: 'coffee', name: 'Coffee', icon: '☕', basePrice: 45, requiredLevel: 4, type: 'product', recipe: { coffee_bean: 1, milk: 1 } },
 
             // L5 解鎖商品 (12000 金幣)
-            { id: 'taco', name: 'Taco', icon: '🌮', basePrice: 5000, requiredLevel: 5, type: 'product', recipe: { tortilla: 2, beef: 1, cheese: 1, sauce: 1 } },
-            { id: 'sushi', name: 'Sushi Set', icon: '🍣', basePrice: 6000, requiredLevel: 5, type: 'product', recipe: { rice: 2, fish: 1 } },
+            { id: 'taco', name: 'Taco', icon: '🌮', basePrice: 150, requiredLevel: 5, type: 'product', recipe: { tortilla: 2, beef: 1, cheese: 1, sauce: 1 } },
+            { id: 'sushi', name: 'Sushi Set', icon: '🍣', basePrice: 160, requiredLevel: 5, type: 'product', recipe: { rice: 2, fish: 1 } },
         ];
 
         // 原料列表 (Ingredients)
@@ -674,23 +674,23 @@
             { id: 'soda', name: 'Soda Syrup', icon: '💧', baseCost: 30, type: 'ingredient' },
             { id: 'ice', name: 'Ice', icon: '🧊', baseCost: 5, type: 'ingredient' },
             { id: 'bun', name: 'Burger Bun', icon: '🍞', baseCost: 25, type: 'ingredient' },
-            { id: 'beef', name: 'Beef Patty', icon: '🥩', baseCost: 70, type: 'ingredient' },
+            { id: 'beef', name: 'Beef Patty', icon: '🥩', baseCost: 40, type: 'ingredient' },
             { id: 'lettuce', name: 'Lettuce', icon: '🥬', baseCost: 15, type: 'ingredient' },
             { id: 'milk', name: 'Milk', icon: '🥛', baseCost: 20, type: 'ingredient' },
             { id: 'icecream_base', name: 'Ice Cream Base', icon: '🍦', baseCost: 40, type: 'ingredient' },
-            { id: 'chicken', name: 'Chicken Pieces', icon: '🐔', baseCost: 50, type: 'ingredient' },
+            { id: 'chicken', name: 'Chicken Pieces', icon: '🐔', baseCost: 40, type: 'ingredient' },
             { id: 'hotdog_bun', name: 'Hot Dog Bun', icon: '🥖', baseCost: 35, type: 'ingredient' },
-            { id: 'sausage', name: 'Sausage', icon: '🌭', baseCost: 60, type: 'ingredient' },
+            { id: 'sausage', name: 'Sausage', icon: '🌭', baseCost: 45, type: 'ingredient' },
             { id: 'sauce', name: 'Sauce Packet', icon: '🥫', baseCost: 20, type: 'ingredient' },
-            { id: 'dough', name: 'Pizza Dough', icon: '🫓', baseCost: 80, type: 'ingredient' },
-            { id: 'cheese', name: 'Cheese', icon: '🧀', baseCost: 45, type: 'ingredient' },
+            { id: 'dough', name: 'Pizza Dough', icon: '🫓', baseCost: 60, type: 'ingredient' },
+            { id: 'cheese', name: 'Cheese', icon: '🧀', baseCost: 35, type: 'ingredient' },
             { id: 'tomato_sauce', name: 'Tomato Sauce', icon: '🍅', baseCost: 30, type: 'ingredient' },
             { id: 'syrup', name: 'Sundae Syrup', icon: '🍯', baseCost: 40, type: 'ingredient' },
             { id: 'dressing', name: 'Salad Dressing', icon: '🍾', baseCost: 30, type: 'ingredient' },
-            { id: 'coffee_bean', name: 'Coffee Beans', icon: '☕', baseCost: 100, type: 'ingredient' },
+            { id: 'coffee_bean', name: 'Coffee Beans', icon: '☕', baseCost: 50, type: 'ingredient' },
             { id: 'tortilla', name: 'Tortilla', icon: '🌮', baseCost: 50, type: 'ingredient' },
-            { id: 'rice', name: 'Sushi Rice', icon: '🍚', baseCost: 90, type: 'ingredient' },
-            { id: 'fish', name: 'Fish Fillet', icon: '🐟', baseCost: 120, type: 'ingredient' },
+            { id: 'rice', name: 'Sushi Rice', icon: '🍚', baseCost: 60, type: 'ingredient' },
+            { id: 'fish', name: 'Fish Fillet', icon: '🐟', baseCost: 80, type: 'ingredient' },
         ];
         
         // Combined list for easy lookup
@@ -749,7 +749,7 @@
         let currentScore = 0; // Coins
         let playerLevel = 1;
         let playerInventory = {}; // { id: { quantity: N, isOnSale: true, cost: C } }
-        const levelThresholds = [1000, 3000, 6000, 12000, 20000]; 
+        const levelThresholds = [4000, 9000, 18000, 30000, 60000]; 
         const priceMultiplier = (level) => 1 + (level - 1) * 0.05;
         const costMultiplier = (level) => 1 + (level - 1) * 0.5;
 
@@ -1051,7 +1051,7 @@
         }
 
         function getItemCost(item) {
-            const levelMultiplier = 1 + (playerLevel - 1) * 0.8;  // 成本成長變快
+            const levelMultiplier = 1 + (playerLevel - 1) * 0.4;  
             return Math.floor(item.baseCost * levelMultiplier);
         }
         
