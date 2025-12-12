@@ -644,17 +644,17 @@
         // 成品列表 (Final Products)
         const products = [
             // L1 基礎商品
-            { id: 'fries', name: 'Fries', icon: '🍟', basePrice: 45, requiredLevel: 1, type: 'product', recipe: { potato: 1, oil: 1, salt: 1 } },
+            { id: 'fries', name: 'Fries', icon: '🍟', basePrice: 40, requiredLevel: 1, type: 'product', recipe: { potato: 1, oil: 1, salt: 1 } },
             { id: 'cola', name: 'Cola', icon: '🥤', basePrice: 30, requiredLevel: 1, type: 'product', recipe: { soda: 1, ice: 1 } },
-            { id: 'burger', name: 'Burger', icon: '🍔', basePrice: 55, requiredLevel: 1, type: 'product', recipe: { bun: 2, beef: 1, lettuce: 1 } },
-            { id: 'milkshake', name: 'Milkshake', icon: '🥛', basePrice: 45, requiredLevel: 1, type: 'product', recipe: { milk: 1, icecream_base: 1 } },
+            { id: 'burger', name: 'Burger', icon: '🍔', basePrice: 50, requiredLevel: 1, type: 'product', recipe: { bun: 2, beef: 1, lettuce: 1 } },
+            { id: 'milkshake', name: 'Milkshake', icon: '🥛', basePrice: 35, requiredLevel: 1, type: 'product', recipe: { milk: 1, icecream_base: 1 } },
             
             // L2 解鎖商品 (1000 金幣)
-            { id: 'nuggets', name: 'Nuggets', icon: '🍗', basePrice: 60, requiredLevel: 2, type: 'product', recipe: { chicken: 2, oil: 1, salt: 1 } },
-            { id: 'hotdog', name: 'Hot Dog', icon: '🌭', basePrice: 65, requiredLevel: 2, type: 'product', recipe: { hotdog_bun: 1, sausage: 1, sauce: 1 } },
+            { id: 'nuggets', name: 'Nuggets', icon: '🍗', basePrice: 55, requiredLevel: 2, type: 'product', recipe: { chicken: 2, oil: 1, salt: 1 } },
+            { id: 'hotdog', name: 'Hot Dog', icon: '🌭', basePrice: 60, requiredLevel: 2, type: 'product', recipe: { hotdog_bun: 1, sausage: 1, sauce: 1 } },
             
             // L3 解鎖商品 (3000 金幣)
-            { id: 'pizza', name: 'Pizza', icon: '🍕', basePrice: 75, requiredLevel: 3, type: 'product', recipe: { dough: 1, cheese: 1, tomato_sauce: 1 } },
+            { id: 'pizza', name: 'Pizza', icon: '🍕', basePrice: 100, requiredLevel: 3, type: 'product', recipe: { dough: 1, cheese: 1, tomato_sauce: 1 } },
             { id: 'icecream', name: 'Ice Cream Sundae', icon: '🍦', basePrice: 60, requiredLevel: 3, type: 'product', recipe: { icecream_base: 2, syrup: 1 } },
 
             // L4 解鎖商品 (6000 金幣)
@@ -663,34 +663,34 @@
 
             // L5 解鎖商品 (12000 金幣)
             { id: 'taco', name: 'Taco', icon: '🌮', basePrice: 150, requiredLevel: 5, type: 'product', recipe: { tortilla: 2, beef: 1, cheese: 1, sauce: 1 } },
-            { id: 'sushi', name: 'Sushi Set', icon: '🍣', basePrice: 75, requiredLevel: 5, type: 'product', recipe: { rice: 2, fish: 1 } },
+            { id: 'sushi', name: 'Sushi Set', icon: '🍣', basePrice: 160, requiredLevel: 5, type: 'product', recipe: { rice: 2, fish: 1 } },
         ];
 
         // 原料列表 (Ingredients)
         const ingredients = [
-            { id: 'potato', name: 'Potato', icon: '🥔', baseCost: 12, type: 'ingredient' },
-            { id: 'oil', name: 'Frying Oil', icon: '🏺', baseCost: 8, type: 'ingredient' },
-            { id: 'salt', name: 'Salt', icon: '🧂', baseCost: 3, type: 'ingredient' },
-            { id: 'soda', name: 'Soda Syrup', icon: '💧', baseCost: 12, type: 'ingredient' },
-            { id: 'ice', name: 'Ice', icon: '🧊', baseCost: 2, type: 'ingredient' },
-            { id: 'bun', name: 'Burger Bun', icon: '🍞', baseCost: 10, type: 'ingredient' },
-            { id: 'beef', name: 'Beef Patty', icon: '🥩', baseCost: 22, type: 'ingredient' },
-            { id: 'lettuce', name: 'Lettuce', icon: '🥬', baseCost: 5, type: 'ingredient' },
-            { id: 'milk', name: 'Milk', icon: '🥛', baseCost: 8, type: 'ingredient' },
-            { id: 'icecream_base', name: 'Ice Cream Base', icon: '🍦', baseCost: 14, type: 'ingredient' },
-            { id: 'chicken', name: 'Chicken Pieces', icon: '🐔', baseCost: 18, type: 'ingredient' },
-            { id: 'hotdog_bun', name: 'Hot Dog Bun', icon: '🥖', baseCost: 10, type: 'ingredient' },
-            { id: 'sausage', name: 'Sausage', icon: '🌭', baseCost: 18 , type: 'ingredient' },
-            { id: 'sauce', name: 'Sauce Packet', icon: '🥫', baseCost: 6, type: 'ingredient' },
-            { id: 'dough', name: 'Pizza Dough', icon: '🫓', baseCost: 20, type: 'ingredient' },
-            { id: 'cheese', name: 'Cheese', icon: '🧀', baseCost: 12, type: 'ingredient' },
-            { id: 'tomato_sauce', name: 'Tomato Sauce', icon: '🍅', baseCost: 8, type: 'ingredient' },
-            { id: 'syrup', name: 'Sundae Syrup', icon: '🍯', baseCost: 10, type: 'ingredient' },
-            { id: 'dressing', name: 'Salad Dressing', icon: '🍾', baseCost: 6, type: 'ingredient' },
-            { id: 'coffee_bean', name: 'Coffee Beans', icon: '☕', baseCost: 14, type: 'ingredient' },
-            { id: 'tortilla', name: 'Tortilla', icon: '🌮', baseCost: 12, type: 'ingredient' },
-            { id: 'rice', name: 'Sushi Rice', icon: '🍚', baseCost: 14, type: 'ingredient' },
-            { id: 'fish', name: 'Fish Fillet', icon: '🐟', baseCost: 12, type: 'ingredient' },
+            { id: 'potato', name: 'Potato', icon: '🥔', baseCost: 15, type: 'ingredient' },
+            { id: 'oil', name: 'Frying Oil', icon: '🏺', baseCost: 20, type: 'ingredient' },
+            { id: 'salt', name: 'Salt', icon: '🧂', baseCost: 10, type: 'ingredient' },
+            { id: 'soda', name: 'Soda Syrup', icon: '💧', baseCost: 30, type: 'ingredient' },
+            { id: 'ice', name: 'Ice', icon: '🧊', baseCost: 5, type: 'ingredient' },
+            { id: 'bun', name: 'Burger Bun', icon: '🍞', baseCost: 25, type: 'ingredient' },
+            { id: 'beef', name: 'Beef Patty', icon: '🥩', baseCost: 40, type: 'ingredient' },
+            { id: 'lettuce', name: 'Lettuce', icon: '🥬', baseCost: 15, type: 'ingredient' },
+            { id: 'milk', name: 'Milk', icon: '🥛', baseCost: 20, type: 'ingredient' },
+            { id: 'icecream_base', name: 'Ice Cream Base', icon: '🍦', baseCost: 40, type: 'ingredient' },
+            { id: 'chicken', name: 'Chicken Pieces', icon: '🐔', baseCost: 30, type: 'ingredient' },
+            { id: 'hotdog_bun', name: 'Hot Dog Bun', icon: '🥖', baseCost: 35, type: 'ingredient' },
+            { id: 'sausage', name: 'Sausage', icon: '🌭', baseCost: 35, type: 'ingredient' },
+            { id: 'sauce', name: 'Sauce Packet', icon: '🥫', baseCost: 20, type: 'ingredient' },
+            { id: 'dough', name: 'Pizza Dough', icon: '🫓', baseCost: 50, type: 'ingredient' },
+            { id: 'cheese', name: 'Cheese', icon: '🧀', baseCost: 30, type: 'ingredient' },
+            { id: 'tomato_sauce', name: 'Tomato Sauce', icon: '🍅', baseCost: 30, type: 'ingredient' },
+            { id: 'syrup', name: 'Sundae Syrup', icon: '🍯', baseCost: 40, type: 'ingredient' },
+            { id: 'dressing', name: 'Salad Dressing', icon: '🍾', baseCost: 30, type: 'ingredient' },
+            { id: 'coffee_bean', name: 'Coffee Beans', icon: '☕', baseCost: 50, type: 'ingredient' },
+            { id: 'tortilla', name: 'Tortilla', icon: '🌮', baseCost: 50, type: 'ingredient' },
+            { id: 'rice', name: 'Sushi Rice', icon: '🍚', baseCost: 40, type: 'ingredient' },
+            { id: 'fish', name: 'Fish Fillet', icon: '🐟', baseCost: 60, type: 'ingredient' },
         ];
         
         // Combined list for easy lookup
@@ -699,16 +699,16 @@
 
         // --- Shop Facility Upgrade Data ---
         const facilityUpgrades = [
-            { id: 'ad_board', name: 'Promo Board', icon: '📣', maxLevel: 4, description: 'Speeds up customer arrival', levels: [
-                { cost: 25000, intervalReductionMs: 1000, display: '-1s' },
-                { cost: 45000, intervalReductionMs: 2000, display: '-2s' },
-                { cost: 70000, intervalReductionMs: 3500, display: '-3.5s' },
-                { cost: 100000, intervalReductionMs: 5000, display: '-5s' }
+            { id: 'ad_board', name: 'Promo Board', icon: '📣', maxLevel: 3, description: 'Speeds up customer arrival', levels: [
+                { cost: 50000, interval_reduction: 3000, display: '-2s' },
+                { cost: 80000, interval_reduction: 5000, display: '-5s' },
+                { cost: 120000, interval_reduction: 8000, display: '-8s' },
+                { cost: 150000, interval_reduction: 15000, display: '-15s' },
             ]},
             { id: 'reg_boost', name: 'Pro Kitchen', icon: '🔪', maxLevel: 3, description: 'Permanently increases product selling price', levels: [
-                { cost: 30000, price_multiplier: 0.05, display: '+5% Price' },
-                { cost: 60000, price_multiplier: 0.08, display: '+8% Price' },
-                { cost: 90000, price_multiplier: 0.12, display: '+12% Price' }
+                { cost: 60000, price_multiplier: 0.1, display: '+10% Price' },
+                { cost: 80000, price_multiplier: 0.25, display: '+25% Price' },
+                { cost: 100000, price_multiplier: 0.5, display: '+50% Price' },
             ]},
         ];
 
@@ -1048,12 +1048,12 @@
             const levelMultiplier = 0.5 + (playerLevel - 1) * 0.05;  
             const facilityMultiplier = 1;
             
-            return Math.floor(item.basePrice * 0.55);
+            return Math.floor(item.basePrice * levelMultiplier * facilityMultiplier);
         }
 
         function getItemCost(item) {
             const levelMultiplier = 1 + (playerLevel - 1) * 0.4;  
-            return Math.floor(item.baseCost * 1);
+            return Math.floor(item.baseCost * levelMultiplier);
         }
         
         function getCustomerInterval() {
@@ -1250,8 +1250,8 @@
 
         // ========== Maintenance Cost System (Story Version) ==========
 
-// 每 4 分鐘扣一次維修費
-const MAINTENANCE_INTERVAL = 240000;
+// 每 5 分鐘扣一次維修費
+const MAINTENANCE_INTERVAL = 300000;
 
 // 設備與劇情（壞掉原因）
 const FACILITIES = [
