@@ -22,7 +22,7 @@
         /* Game Board and Card General Styles */
         .card-container {
             border: 3px solid #b91c1c;
-            box-shadow: 0 4px 0 #991b1c; /* 修正陰影顏色為深紅 */
+            box-shadow: 0 4px 0 #991b1c; 
             transition: transform 0.1s, box-shadow 0.1s, opacity 0.3s;
             cursor: pointer;
             user-select: none;
@@ -57,60 +57,32 @@
             box-shadow: 0 2px 0 #991b1c;
         }
 
-        /* Memory Game (Stage 2) Styles */
-        .memory-card {
-            background-color: #fca5a5; 
-            box-shadow: 0 8px 0 #991b1c;
-            transform: translateY(0);
-            backface-visibility: hidden;
-            perspective: 1000px;
-            height: 120px;
-            position: relative;
+        /* Open Match Game (Stage 2) Styles */
+        .stage2-card {
+            background-color: #93c5fd; 
+            color: #1e3a8a;
+            border-color: #1e3a8a;
+            box-shadow: 0 4px 0 #1e3a8a;
         }
-        .memory-card-back {
-            background-color: #3b82f6; 
-            color: #fff;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            transform: rotateY(0deg);
-            transition: transform 0.5s;
+        .stage2-card.selected {
+            background-color: #fcd34d; 
+            border-color: #d97706;
+            box-shadow: 0 4px 0 #d97706;
         }
-        .memory-card.flipped .memory-card-back {
-            transform: rotateY(180deg);
-        }
-        .memory-card-content {
-            transform: rotateY(-180deg);
-            transition: transform 0.5s;
-            backface-visibility: hidden;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            padding: 4px;
-        }
-        .memory-card.flipped .memory-card-content {
-            transform: rotateY(0deg);
-        }
-        .memory-card.matched {
-            box-shadow: none;
+        .stage2-card.matched {
             background-color: #10b981; 
-            transform: scale(0);
+            border-color: #059669;
+            box-shadow: none;
+            transform: scale(0.9);
             opacity: 0;
-            transition: transform 0.5s, opacity 0.5s;
             cursor: default;
         }
+        .stage2-card:active:not(.matched) {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #1e3a8a;
+        }
 
-        /* Spelling Game (Stage 3 & 4) Styles */
+        /* Spelling Game (Stage 3) Styles */
         .letter-block {
             background-color: #3b82f6; 
             border: 3px solid #1e40af;
@@ -157,6 +129,29 @@
             20%, 60% {transform: translateX(-5px);}
             40%, 80% {transform: translateX(5px);}
         }
+
+        /* Rice Bag Bling Animation */
+        @keyframes bling {
+            0% { filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 25px rgba(255, 255, 0, 1)); transform: scale(1.15); }
+            100% { filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5)); transform: scale(1); }
+        }
+        .bling-badge {
+            animation: bling 2s infinite ease-in-out;
+            display: inline-block;
+        }
+        
+        /* Family Jumping Animation */
+        @keyframes jump {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+        }
+        .family-jump {
+            animation: jump 0.6s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
+        }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
 
         /* Stage/Week Button Styles */
         .stage-button {
@@ -212,7 +207,6 @@
             padding: 0.25rem 0.5rem;
             border-radius: 9999px; 
         }
-
         .facility-card {
              background-color: #1f2937;
              border-color: #4b5563;
@@ -243,12 +237,15 @@
             <h1 class="roblox-title text-3xl sm:text-4xl font-extrabold text-yellow-300 flex items-center">
                 <span class="text-5xl mr-3 transform -rotate-12">💡</span> Vocab Adventure!
             </h1>
-            <div class="flex items-center space-x-4">
-                 <div id="level-display" class="bg-blue-600 px-3 py-2 rounded-lg font-bold text-lg text-white shadow-lg border-2 border-blue-800">
+            <div class="flex items-center space-x-2 sm:space-x-4">
+                 <div id="level-display" class="bg-blue-600 px-3 py-2 rounded-lg font-bold text-sm sm:text-lg text-white shadow-lg border-2 border-blue-800">
                     Level: 1
                 </div>
-                <div id="score-display" class="bg-yellow-600 px-4 py-2 rounded-lg font-bold text-xl text-gray-900 shadow-lg border-2 border-yellow-800 relative">
+                <div id="score-display" class="bg-yellow-600 px-3 py-2 rounded-lg font-bold text-sm sm:text-xl text-gray-900 shadow-lg border-2 border-yellow-800 relative">
                     Coins: 0
+                </div>
+                <div id="rice-display" class="bg-green-600 px-3 py-2 rounded-lg font-bold text-sm sm:text-xl text-white shadow-lg border-2 border-green-800 relative">
+                    🍚: 0
                 </div>
             </div>
         </div>
@@ -262,6 +259,7 @@
         <div id="main-nav" class="flex flex-wrap justify-center gap-4 mb-6">
             <button id="nav-game" class="stage-button rounded-xl" onclick="showView('game')">Vocab Stages</button>
             <button id="nav-shop" class="stage-button rounded-xl" onclick="showView('shop')">My Fast Food Shop 🍔</button>
+            <button id="nav-family" class="stage-button rounded-xl bg-pink-600 border-pink-800 shadow-pink-800 text-white" onclick="showView('family')">My Family 👨‍👩‍👦‍👦</button>
         </div>
 
         <!-- Game View - Visibility Controlled -->
@@ -277,13 +275,10 @@
                     Stage 1: Picture Match
                 </button>
                 <button id="stage2-button" class="stage-button rounded-xl" onclick="startGame(window.getCurrentWeek(), 2)">
-                    Stage 2: Keyword Memory
+                    Stage 2: Keyword Match
                 </button>
                 <button id="stage3-button" class="stage-button rounded-xl" onclick="startGame(window.getCurrentWeek(), 3)">
                     Stage 3: Spelling Challenge
-                </button>
-                <button id="stage4-button" class="stage-button rounded-xl bg-purple-600 border-purple-800 shadow-purple-800" onclick="startGame(window.getCurrentWeek(), 4)">
-                    Stage 4: Handwriting Practice
                 </button>
             </div>
 
@@ -297,14 +292,20 @@
         <div id="shop-view" class="hidden">
             <div id="shop-content" class="p-4 bg-gray-900 rounded-lg">
                 <!-- Shop Content generated here -->
-                <div class="text-center mt-8">
-                    <button id="reset-progress-button" class="px-3 py-1 rounded-lg" onclick="resetGameProgress()">
-                        Reset All Progress (Coins & Level)
-                    </button>
-                </div>
+            </div>
+            <div class="text-center mt-8">
+                <button id="reset-progress-button" class="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded-lg text-sm transition-colors" onclick="resetGameProgress()">
+                    Reset All Progress (Coins, Level & Rice)
+                </button>
             </div>
         </div>
 
+        <!-- Family View - Visibility Controlled -->
+        <div id="family-view" class="hidden">
+            <div id="family-content" class="p-6 bg-gray-900 rounded-lg text-center">
+                <!-- Family Content generated here -->
+            </div>
+        </div>
 
         <!-- Copyright Note -->
         <div class="text-center text-sm mt-8 text-gray-400">
@@ -314,7 +315,6 @@
 
     <script type="module">
         // --- TTS Core Functionality (Used for Stage 3 word reading) ---
-
         const base64ToArrayBuffer = (base64) => {
             const binaryString = window.atob(base64);
             const len = binaryString.length;
@@ -418,7 +418,6 @@
             }
         }
 
-        
 // --- Vocab Data: Week 12 - Week 17 (25 words each) ---
 const vocabData = {
     12: [
@@ -585,83 +584,78 @@ const vocabData = {
     ]
 };
 
-```
+        // --- 商品和原料定義 (Prices adjusted to force vocab practice) ---
 
-
-        // --- 商品和原料定義 ---
-
-        // 成品列表 (Final Products)
+        // 成品列表 (Final Products) - Base prices are intentionally lower than ingredient costs
         const products = [
             // L1 基礎商品
-            { id: 'fries', name: 'Fries', icon: '🍟', basePrice: 40, requiredLevel: 1, type: 'product', recipe: { potato: 1, oil: 1, salt: 1 } },
-            { id: 'cola', name: 'Cola', icon: '🥤', basePrice: 30, requiredLevel: 1, type: 'product', recipe: { soda: 1, ice: 1 } },
-            { id: 'burger', name: 'Burger', icon: '🍔', basePrice: 50, requiredLevel: 1, type: 'product', recipe: { bun: 2, beef: 1, lettuce: 1 } },
-            { id: 'milkshake', name: 'Milkshake', icon: '🥛', basePrice: 35, requiredLevel: 1, type: 'product', recipe: { milk: 1, icecream_base: 1 } },
+            { id: 'fries', name: 'Fries', icon: '🍟', basePrice: 15, requiredLevel: 1, type: 'product', recipe: { potato: 1, oil: 1, salt: 1 } },
+            { id: 'cola', name: 'Cola', icon: '🥤', basePrice: 5, requiredLevel: 1, type: 'product', recipe: { soda: 1, ice: 1 } },
+            { id: 'burger', name: 'Burger', icon: '🍔', basePrice: 25, requiredLevel: 1, type: 'product', recipe: { bun: 2, beef: 1, lettuce: 1 } },
+            { id: 'milkshake', name: 'Milkshake', icon: '🥛', basePrice: 15, requiredLevel: 1, type: 'product', recipe: { milk: 1, icecream_base: 1 } },
             
-            // L2 解鎖商品 (1000 金幣)
-            { id: 'nuggets', name: 'Nuggets', icon: '🍗', basePrice: 55, requiredLevel: 2, type: 'product', recipe: { chicken: 2, oil: 1, salt: 1 } },
-            { id: 'hotdog', name: 'Hot Dog', icon: '🌭', basePrice: 60, requiredLevel: 2, type: 'product', recipe: { hotdog_bun: 1, sausage: 1, sauce: 1 } },
+            // L2 解鎖商品 
+            { id: 'nuggets', name: 'Nuggets', icon: '🍗', basePrice: 25, requiredLevel: 2, type: 'product', recipe: { chicken: 2, oil: 1, salt: 1 } },
+            { id: 'hotdog', name: 'Hot Dog', icon: '🌭', basePrice: 20, requiredLevel: 2, type: 'product', recipe: { hotdog_bun: 1, sausage: 1, sauce: 1 } },
             
-            // L3 解鎖商品 (3000 金幣)
-            { id: 'pizza', name: 'Pizza', icon: '🍕', basePrice: 100, requiredLevel: 3, type: 'product', recipe: { dough: 1, cheese: 1, tomato_sauce: 1 } },
-            { id: 'icecream', name: 'Ice Cream Sundae', icon: '🍦', basePrice: 60, requiredLevel: 3, type: 'product', recipe: { icecream_base: 2, syrup: 1 } },
+            // L3 解鎖商品 
+            { id: 'pizza', name: 'Pizza', icon: '🍕', basePrice: 25, requiredLevel: 3, type: 'product', recipe: { dough: 1, cheese: 1, tomato_sauce: 1 } },
+            { id: 'icecream', name: 'Ice Cream Sundae', icon: '🍦', basePrice: 25, requiredLevel: 3, type: 'product', recipe: { icecream_base: 2, syrup: 1 } },
 
-            // L4 解鎖商品 (6000 金幣)
-            { id: 'salad', name: 'Salad', icon: '🥗', basePrice: 80, requiredLevel: 4, type: 'product', recipe: { lettuce: 2, dressing: 1, chicken: 1 } },
-            { id: 'coffee', name: 'Coffee', icon: '☕', basePrice: 45, requiredLevel: 4, type: 'product', recipe: { coffee_bean: 1, milk: 1 } },
+            // L4 解鎖商品 
+            { id: 'salad', name: 'Salad', icon: '🥗', basePrice: 25, requiredLevel: 4, type: 'product', recipe: { lettuce: 2, dressing: 1, chicken: 1 } },
+            { id: 'coffee', name: 'Coffee', icon: '☕', basePrice: 15, requiredLevel: 4, type: 'product', recipe: { coffee_bean: 1, milk: 1 } },
 
-            // L5 解鎖商品 (12000 金幣)
-            { id: 'taco', name: 'Taco', icon: '🌮', basePrice: 150, requiredLevel: 5, type: 'product', recipe: { tortilla: 2, beef: 1, cheese: 1, sauce: 1 } },
-            { id: 'sushi', name: 'Sushi Set', icon: '🍣', basePrice: 160, requiredLevel: 5, type: 'product', recipe: { rice: 2, fish: 1 } },
+            // L5 解鎖商品 
+            { id: 'taco', name: 'Taco', icon: '🌮', basePrice: 40, requiredLevel: 5, type: 'product', recipe: { tortilla: 2, beef: 1, cheese: 1, sauce: 1 } },
+            { id: 'sushi', name: 'Sushi Set', icon: '🍣', basePrice: 25, requiredLevel: 5, type: 'product', recipe: { rice: 2, fish: 1 } },
         ];
 
         // 原料列表 (Ingredients)
         const ingredients = [
             { id: 'potato', name: 'Potato', icon: '🥔', baseCost: 15, type: 'ingredient' },
-            { id: 'oil', name: 'Frying Oil', icon: '🏺', baseCost: 20, type: 'ingredient' },
-            { id: 'salt', name: 'Salt', icon: '🧂', baseCost: 10, type: 'ingredient' },
-            { id: 'soda', name: 'Soda Syrup', icon: '💧', baseCost: 30, type: 'ingredient' },
+            { id: 'oil', name: 'Frying Oil', icon: '🏺', baseCost: 10, type: 'ingredient' },
+            { id: 'salt', name: 'Salt', icon: '🧂', baseCost: 5, type: 'ingredient' },
+            { id: 'soda', name: 'Soda Syrup', icon: '💧', baseCost: 10, type: 'ingredient' },
             { id: 'ice', name: 'Ice', icon: '🧊', baseCost: 5, type: 'ingredient' },
-            { id: 'bun', name: 'Burger Bun', icon: '🍞', baseCost: 25, type: 'ingredient' },
-            { id: 'beef', name: 'Beef Patty', icon: '🥩', baseCost: 40, type: 'ingredient' },
-            { id: 'lettuce', name: 'Lettuce', icon: '🥬', baseCost: 15, type: 'ingredient' },
-            { id: 'milk', name: 'Milk', icon: '🥛', baseCost: 20, type: 'ingredient' },
-            { id: 'icecream_base', name: 'Ice Cream Base', icon: '🍦', baseCost: 40, type: 'ingredient' },
-            { id: 'chicken', name: 'Chicken Pieces', icon: '🐔', baseCost: 30, type: 'ingredient' },
-            { id: 'hotdog_bun', name: 'Hot Dog Bun', icon: '🥖', baseCost: 35, type: 'ingredient' },
-            { id: 'sausage', name: 'Sausage', icon: '🌭', baseCost: 35, type: 'ingredient' },
-            { id: 'sauce', name: 'Sauce Packet', icon: '🥫', baseCost: 20, type: 'ingredient' },
-            { id: 'dough', name: 'Pizza Dough', icon: '🫓', baseCost: 50, type: 'ingredient' },
-            { id: 'cheese', name: 'Cheese', icon: '🧀', baseCost: 30, type: 'ingredient' },
-            { id: 'tomato_sauce', name: 'Tomato Sauce', icon: '🍅', baseCost: 30, type: 'ingredient' },
-            { id: 'syrup', name: 'Sundae Syrup', icon: '🍯', baseCost: 40, type: 'ingredient' },
-            { id: 'dressing', name: 'Salad Dressing', icon: '🍾', baseCost: 30, type: 'ingredient' },
-            { id: 'coffee_bean', name: 'Coffee Beans', icon: '☕', baseCost: 50, type: 'ingredient' },
-            { id: 'tortilla', name: 'Tortilla', icon: '🌮', baseCost: 50, type: 'ingredient' },
-            { id: 'rice', name: 'Sushi Rice', icon: '🍚', baseCost: 40, type: 'ingredient' },
-            { id: 'fish', name: 'Fish Fillet', icon: '🐟', baseCost: 60, type: 'ingredient' },
+            { id: 'bun', name: 'Burger Bun', icon: '🍞', baseCost: 10, type: 'ingredient' },
+            { id: 'beef', name: 'Beef Patty', icon: '🥩', baseCost: 25, type: 'ingredient' },
+            { id: 'lettuce', name: 'Lettuce', icon: '🥬', baseCost: 10, type: 'ingredient' },
+            { id: 'milk', name: 'Milk', icon: '🥛', baseCost: 15, type: 'ingredient' },
+            { id: 'icecream_base', name: 'Ice Cream Base', icon: '🍦', baseCost: 20, type: 'ingredient' },
+            { id: 'chicken', name: 'Chicken Pieces', icon: '🐔', baseCost: 20, type: 'ingredient' },
+            { id: 'hotdog_bun', name: 'Hot Dog Bun', icon: '🥖', baseCost: 15, type: 'ingredient' },
+            { id: 'sausage', name: 'Sausage', icon: '🌭', baseCost: 20, type: 'ingredient' },
+            { id: 'sauce', name: 'Sauce Packet', icon: '🥫', baseCost: 5, type: 'ingredient' },
+            { id: 'dough', name: 'Pizza Dough', icon: '🫓', baseCost: 20, type: 'ingredient' },
+            { id: 'cheese', name: 'Cheese', icon: '🧀', baseCost: 20, type: 'ingredient' },
+            { id: 'tomato_sauce', name: 'Tomato Sauce', icon: '🍅', baseCost: 15, type: 'ingredient' },
+            { id: 'syrup', name: 'Sundae Syrup', icon: '🍯', baseCost: 10, type: 'ingredient' },
+            { id: 'dressing', name: 'Salad Dressing', icon: '🍾', baseCost: 10, type: 'ingredient' },
+            { id: 'coffee_bean', name: 'Coffee Beans', icon: '☕', baseCost: 15, type: 'ingredient' },
+            { id: 'tortilla', name: 'Tortilla', icon: '🌮', baseCost: 15, type: 'ingredient' },
+            { id: 'rice', name: 'Sushi Rice', icon: '🍚', baseCost: 10, type: 'ingredient' },
+            { id: 'fish', name: 'Fish Fillet', icon: '🐟', baseCost: 30, type: 'ingredient' },
         ];
         
         // Combined list for easy lookup
         const allShopItems = [...products, ...ingredients];
 
-
         // --- Shop Facility Upgrade Data ---
         const facilityUpgrades = [
-            { id: 'ad_board', name: 'Promo Board', icon: '📣', maxLevel: 3, description: 'Speeds up customer arrival', levels: [
-                { cost: 50000, interval_reduction: 3000, display: '-2s' },
-                { cost: 80000, interval_reduction: 5000, display: '-5s' },
-                { cost: 120000, interval_reduction: 8000, display: '-8s' },
-                { cost: 150000, interval_reduction: 15000, display: '-15s' },
+            { id: 'bulk_discount', name: 'Smart Supplier', icon: '🤝', maxLevel: 3, description: 'Slightly reduces ingredient costs', levels: [
+                { cost: 2500, cost_reduction: 0.05, display: '-5% Cost' },
+                { cost: 7000, cost_reduction: 0.10, display: '-10% Cost' },
+                { cost: 12000, cost_reduction: 0.15, display: '-15% Cost' },
             ]},
             { id: 'reg_boost', name: 'Pro Kitchen', icon: '🔪', maxLevel: 3, description: 'Permanently increases product selling price', levels: [
-                { cost: 60000, price_multiplier: 0.1, display: '+10% Price' },
-                { cost: 80000, price_multiplier: 0.25, display: '+25% Price' },
-                { cost: 100000, price_multiplier: 0.5, display: '+50% Price' },
+                { cost: 3000, price_multiplier: 0.05, display: '+5% Price' },
+                { cost: 8000, price_multiplier: 0.10, display: '+10% Price' },
+                { cost: 15000, price_multiplier: 0.20, display: '+20% Price' },
             ]},
         ];
 
-        // --- Customer Feedback Data (In Traditional Chinese) ---
+        // --- Customer Feedback Data ---
         const customerFeedback = {
             1: [
                 "還不錯啦，給個讚！",
@@ -689,49 +683,62 @@ const vocabData = {
             ]
         };
 
-        // --- Game State Variables (Centralized Declaration) ---
-        let currentWeek = 11;
+        // --- Game State Variables ---
+        let currentWeek = 12;
         let currentStage = 0;
         let currentView = 'game';
         let isProcessing = false;
         
         // Economy and Level
-        let currentScore = 0; // Coins
+        let currentScore = 0; 
         let playerLevel = 1;
-        let playerInventory = {}; // { id: { quantity: N, isOnSale: true, cost: C } }
+        let playerInventory = {}; 
+        let productsSold = 0;
+        let playerBadges = 0;
+        let newlyEarnedRice = 0; // Trigger for happy animation
+
         const levelThresholds = [4000, 9000, 18000, 30000, 60000]; 
-        const priceMultiplier = (level) => 1 + (level - 1) * 0.05;
-        const costMultiplier = (level) => 1 + (level - 1) * 0.5;
 
         // Progress and State
         let completedStages = {}; 
         let activeGameState = {}; 
-        let shopFacilities = {}; // { ad_board: 0, reg_boost: 0 }
+        let shopFacilities = {}; 
 
         // Stage-Specific States
-        let selectedConnectCard = null; // Stage 1
-        let selectedMemoryCards = []; // Stage 2
-        let matchedMemoryPairs = 0; // Stage 2
-        let currentPuzzle = {}; // Stage 3
-        let currentGuess = []; // Stage 3
-        let stage3Words = []; // Stage 3
-        let currentWordIndex = 0; // Stage 3
+        let selectedConnectCard = null; 
+        let selectedStage2Card = null;
+        let matchedMemoryPairs = 0; 
+        let currentPuzzle = {}; 
+        let currentGuess = []; 
+        let stage3Words = []; 
+        let currentWordIndex = 0; 
         const totalStage3Words = 10; 
 
         // Timer
         const BASE_CUSTOMER_INTERVAL = 40000; 
         let customerTimer = null; 
 
-        // **SFX Setup (unchanged)**
-        let correctSynth = new Tone.PolySynth(Tone.Synth, {
-            oscillator: { type: "square" }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.2, release: 1 }
-        }).toDestination();
-        let wrongSynth = new Tone.PolySynth(Tone.Synth, {
-            oscillator: { type: "sawtooth" }, envelope: { attack: 0.001, decay: 0.2, sustain: 0.01, release: 0.5 }
-        }).toDestination();
+        // **SFX Setup**
+        let correctSynth = null;
+        let wrongSynth = null;
+        
+        function initAudio() {
+            if (!correctSynth) {
+                correctSynth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "square" }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.2, release: 1 }
+                }).toDestination();
+            }
+            if (!wrongSynth) {
+                wrongSynth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "sawtooth" }, envelope: { attack: 0.001, decay: 0.2, sustain: 0.01, release: 0.5 }
+                }).toDestination();
+            }
+        }
 
-        function playSFX(type) {
-            Tone.start();
+        async function playSFX(type) {
+            await Tone.start();
+            initAudio(); 
+            
             if (type === 'correct') {
                 correctSynth.triggerAttackRelease(["C5", "E5", "G5"], "8n");
             } else if (type === 'wrong') {
@@ -742,13 +749,9 @@ const vocabData = {
         }
 
         function stopBGM() {
-            if (Tone.Transport.state !== 'stopped') {
+            if (Tone.Transport && Tone.Transport.state !== 'stopped') {
                 Tone.Transport.stop();
             }
-        }
-
-        function startBGM(stage) {
-            stopBGM(); 
         }
 
         window.getCurrentWeek = () => currentWeek;
@@ -759,14 +762,15 @@ const vocabData = {
         const weekSelector = document.getElementById('week-selector');
         const scoreDisplay = document.getElementById('score-display');
         const levelDisplay = document.getElementById('level-display');
+        const riceDisplay = document.getElementById('rice-display');
         const shopContent = document.getElementById('shop-content');
         const gameView = document.getElementById('game-view');
         const shopView = document.getElementById('shop-view');
+        const familyView = document.getElementById('family-view');
 
 
         // --- Utility Functions ---
 
-        // Fisher-Yates shuffle
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -775,11 +779,10 @@ const vocabData = {
             return array;
         }
 
-        // Display Score Increase/Decrease Feedback
         function showScoreFeedback(points) {
             const feedback = document.createElement('div');
             feedback.textContent = points > 0 ? `+${points}` : `${points}`;
-            feedback.className = 'absolute font-extrabold text-2xl text-yellow-300 pointer-events-none transition-all duration-1000 opacity-100';
+            feedback.className = `absolute font-extrabold text-2xl ${points > 0 ? 'text-yellow-300' : 'text-red-500'} pointer-events-none transition-all duration-1000 opacity-100 z-50`;
             
             const scoreRect = scoreDisplay.getBoundingClientRect();
             feedback.style.position = 'fixed'; 
@@ -788,13 +791,11 @@ const vocabData = {
             
             document.body.appendChild(feedback);
             
-            // Animation trigger
             setTimeout(() => {
                 feedback.style.transform = 'translateY(-50px)';
                 feedback.style.opacity = '0';
             }, 50);
             
-            // Remove element
             setTimeout(() => {
                 feedback.remove();
             }, 1000);
@@ -821,8 +822,12 @@ const vocabData = {
             return false;
         }
 
+        function updateRiceDisplay() {
+            if (riceDisplay) riceDisplay.textContent = `🍚: ${playerBadges}`;
+        }
+
         function updateScore(points) {
-            currentScore += points;
+            currentScore = Math.max(0, currentScore + points); // Prevent going below 0
             scoreDisplay.textContent = `Coins: ${currentScore}`;
             showScoreFeedback(points); 
             checkLevelUp();
@@ -839,8 +844,18 @@ const vocabData = {
                 playerInventory = data.playerInventory || {};
                 activeGameState = data.activeGameState || {};
                 shopFacilities = data.shopFacilities || {}; 
+                productsSold = data.productsSold || 0;
+                playerBadges = data.playerBadges || 0;
+
+                // Migrate old array logic to new play count object logic
+                for (let w in completedStages) {
+                    if (Array.isArray(completedStages[w])) {
+                        let oldArr = completedStages[w];
+                        completedStages[w] = {};
+                        oldArr.forEach(s => completedStages[w][s] = 1);
+                    }
+                }
             }
-            // Initialize facilities
             facilityUpgrades.forEach(f => {
                 if (shopFacilities[f.id] === undefined) {
                     shopFacilities[f.id] = 0;
@@ -848,6 +863,7 @@ const vocabData = {
             });
             scoreDisplay.textContent = `Coins: ${currentScore}`;
             levelDisplay.textContent = `Level: ${playerLevel}`;
+            updateRiceDisplay();
         }
 
         function saveProgress() {
@@ -858,28 +874,29 @@ const vocabData = {
                 playerInventory: playerInventory,
                 activeGameState: activeGameState,
                 shopFacilities: shopFacilities, 
+                productsSold: productsSold,
+                playerBadges: playerBadges
             };
             localStorage.setItem('vocabAdventureProgress', JSON.stringify(dataToSave));
             updateUI();
         }
         
-        // Reset All Game Progress
         window.resetGameProgress = function() {
             if (!confirm('🚨 Are you sure you want to reset all game progress, coins, and level? This action cannot be undone!')) {
                 return;
             }
 
             localStorage.removeItem('vocabAdventureProgress');
-            
-            // Reset state variables
             currentScore = 0;
             playerLevel = 1;
             playerInventory = {};
             completedStages = {};
             activeGameState = {};
             shopFacilities = {}; 
+            productsSold = 0;
+            playerBadges = 0;
+            newlyEarnedRice = 0;
             
-            // Re-initialize facilities
             facilityUpgrades.forEach(f => { shopFacilities[f.id] = 0; });
 
             const allWeeks = Object.keys(vocabData).map(Number).sort((a, b) => a - b);
@@ -889,6 +906,7 @@ const vocabData = {
             stopCustomerTimer();
             stopBGM();
             
+            updateRiceDisplay();
             messageBox.textContent = '✅ All progress cleared. Welcome back!';
             showView('game');
             selectWeek(currentWeek);
@@ -906,27 +924,27 @@ const vocabData = {
         
         function setStageCompleted(week, stage) {
             if (!completedStages[week]) {
-                completedStages[week] = [];
+                completedStages[week] = {};
             }
-            if (!completedStages[week].includes(stage)) {
-                completedStages[week].push(stage);
-                saveProgress();
+            if (!completedStages[week][stage]) {
+                completedStages[week][stage] = 0;
             }
-            // Clear temporary stage progress
+            completedStages[week][stage]++;
+            saveProgress();
+
             if (activeGameState[week] && activeGameState[week][stage]) {
                 delete activeGameState[week][stage];
                 saveProgress(); 
             }
         }
         
-        function isStageCompleted(week, stage) {
-            if (stage === 4) return false;
-            return completedStages[week] && completedStages[week].includes(stage);
+        function getStagePlayCount(week, stage) {
+            return (completedStages[week] && completedStages[week][stage]) ? completedStages[week][stage] : 0;
         }
 
         function isWeekCompleted(week) {
             const dataLength = 3; 
-            return completedStages[week] && completedStages[week].length === dataLength;
+            return completedStages[week] && Object.keys(completedStages[week]).length >= dataLength;
         }
 
         function renderWeekSelector() {
@@ -934,10 +952,9 @@ const vocabData = {
             const allWeeks = Object.keys(vocabData).map(Number).sort((a, b) => a - b);
             
             allWeeks.forEach(week => {
-                const isCompleted = isWeekCompleted(week);
                 const button = document.createElement('button');
                 button.className = `stage-button rounded-full text-sm transition-all ${week === currentWeek ? 'bg-red-500 border-red-700 shadow-red-700' : ''}`;
-                button.textContent = `W${week} ${isCompleted ? '✅' : ''}`;
+                button.textContent = `W${week}`;
                 button.disabled = false; 
                 
                 button.onclick = () => selectWeek(week);
@@ -956,34 +973,40 @@ const vocabData = {
 
         function updateUI() {
             renderWeekSelector();
-            renderShop(); 
+            
+            // Only update shop or family if we're actively looking at it to prevent scroll jittering
+            if(currentView === 'shop') renderShop();
+            if(currentView === 'family') renderFamilyView();
 
             if (currentWeek === 0) return;
 
             document.querySelectorAll('#stage-selector button').forEach(btn => btn.disabled = false);
 
-            document.getElementById('stage1-button').textContent = isStageCompleted(currentWeek, 1) ? 'Stage 1: Picture Match ✅' : 'Stage 1: Picture Match';
-            document.getElementById('stage2-button').textContent = isStageCompleted(currentWeek, 2) ? 'Stage 2: Keyword Memory ✅' : 'Stage 2: Keyword Memory';
-            document.getElementById('stage3-button').textContent = isStageCompleted(currentWeek, 3) ? 'Stage 3: Spelling Challenge ✅' : 'Stage 3: Spelling Challenge';
-            document.getElementById('stage4-button').textContent = 'Stage 4: Handwriting Practice';
+            document.getElementById('stage1-button').textContent = `Stage 1: Picture Match (Played: ${getStagePlayCount(currentWeek, 1)})`;
+            document.getElementById('stage2-button').textContent = `Stage 2: Keyword Match (Played: ${getStagePlayCount(currentWeek, 2)})`;
+            document.getElementById('stage3-button').textContent = `Stage 3: Spelling Challenge (Played: ${getStagePlayCount(currentWeek, 3)})`;
         }
 
-        // --- View Switching ---
         window.showView = function(view) {
             currentView = view;
+            gameView.classList.add('hidden');
+            shopView.classList.add('hidden');
+            familyView.classList.add('hidden');
+            
+            stopCustomerTimer(); // By default stop it
+
             if (view === 'game') {
-                shopView.classList.add('hidden');
                 gameView.classList.remove('hidden');
-                stopCustomerTimer();
             } else if (view === 'shop') {
-                gameView.classList.add('hidden');
                 shopView.classList.remove('hidden');
                 renderShop();
-                startCustomerTimer();
+                startCustomerTimer(); // Only customers in the shop
+            } else if (view === 'family') {
+                familyView.classList.remove('hidden');
+                renderFamilyView();
             }
         }
 
-        // --- Shop/Economy Logic ---
         function getFacilityPriceMultiplier() {
             const registerLevel = shopFacilities['reg_boost'] || 0;
             let totalMultiplier = 1.0;
@@ -992,29 +1015,32 @@ const vocabData = {
             }
             return totalMultiplier;
         }
+
+        function getFacilityCostMultiplier() {
+            const supplierLevel = shopFacilities['bulk_discount'] || 0;
+            let totalReduction = 0.0;
+            for (let i = 0; i < supplierLevel; i++) {
+                totalReduction += facilityUpgrades.find(f => f.id === 'bulk_discount').levels[i].cost_reduction;
+            }
+            return 1.0 - totalReduction;
+        }
     
         function getItemPrice(item) {
-            const levelMultiplier = 0.5 + (playerLevel - 1) * 0.05;  
-            const facilityMultiplier = 1;
-            
-            return Math.floor(item.basePrice * levelMultiplier * facilityMultiplier);
+            // Simplified to ensure selling operates at a net loss to encourage vocab practice
+            const facilityMultiplier = getFacilityPriceMultiplier();
+            return Math.floor(item.basePrice * facilityMultiplier);
         }
 
         function getItemCost(item) {
-            const levelMultiplier = 1 + (playerLevel - 1) * 0.4;  
-            return Math.floor(item.baseCost * levelMultiplier);
+            // Static cost to ensure a predictable loss margin, affected by smart supplier
+            const facilityMultiplier = getFacilityCostMultiplier();
+            return Math.floor(item.baseCost * facilityMultiplier);
         }
         
         function getCustomerInterval() {
-            const adBoardLevel = shopFacilities['ad_board'] || 0;
-            let totalReduction = 0;
-            for (let i = 0; i < adBoardLevel; i++) {
-                totalReduction += facilityUpgrades.find(f => f.id === 'ad_board').levels[i].interval_reduction;
-            }
-            return Math.max(5000, BASE_CUSTOMER_INTERVAL - totalReduction);
+            return BASE_CUSTOMER_INTERVAL;
         }
 
-        // Buy Facility
         window.buyFacility = function(facilityId) {
             const facility = facilityUpgrades.find(f => f.id === facilityId);
             const currentLevel = shopFacilities[facilityId] || 0;
@@ -1029,12 +1055,9 @@ const vocabData = {
 
             if (currentScore >= cost) {
                 updateScore(-cost);
-                
                 shopFacilities[facilityId] = currentLevel + 1;
-                
                 messageBox.textContent = `Facility Upgrade Success! ${facility.name} reached Level ${currentLevel + 1}!`;
                 playSFX('correct');
-                
                 stopCustomerTimer();
                 startCustomerTimer();
             } else {
@@ -1044,7 +1067,6 @@ const vocabData = {
             renderShop();
         }
 
-        // Buy Ingredient (Item Type: ingredient)
         window.buyItem = function(itemId) {
             const item = allShopItems.find(i => i.id === itemId);
             const cost = getItemCost(item);
@@ -1057,7 +1079,6 @@ const vocabData = {
 
             if (currentScore >= cost) {
                 updateScore(-cost);
-
                 const isProduct = item.type === 'product';
                 playerInventory[itemId] = playerInventory[itemId] || { quantity: 0, isOnSale: isProduct };
                 playerInventory[itemId].quantity += 1;
@@ -1071,7 +1092,6 @@ const vocabData = {
             renderShop();
         }
         
-        // Craft Final Product
         window.craftItem = function(productId) {
             const product = products.find(p => p.id === productId);
             if (!product) return;
@@ -1080,7 +1100,6 @@ const vocabData = {
             let hasEnoughIngredients = true;
             let missingIngredient = '';
 
-            // 1. Check Recipe
             for (const ingredientId in recipe) {
                 const required = recipe[ingredientId];
                 const owned = (playerInventory[ingredientId] && playerInventory[ingredientId].quantity) || 0;
@@ -1092,7 +1111,6 @@ const vocabData = {
             }
 
             if (hasEnoughIngredients) {
-                // 2. Consume Ingredients
                 for (const ingredientId in recipe) {
                     playerInventory[ingredientId].quantity -= recipe[ingredientId];
                     if (playerInventory[ingredientId].quantity <= 0) {
@@ -1100,7 +1118,6 @@ const vocabData = {
                     }
                 }
 
-                // 3. Add to Product Stock (default to on sale)
                 playerInventory[productId] = playerInventory[productId] || { quantity: 0, isOnSale: true };
                 playerInventory[productId].quantity += 1;
 
@@ -1108,7 +1125,6 @@ const vocabData = {
                 playSFX('correct');
                 saveProgress();
             } else {
-                // Determine ingredient name for feedback
                 const ingredientNameForFeedback = ingredients.find(i => i.id === missingIngredient)?.name || 'Unknown Ingredient';
                 const requiredAmount = recipe[Object.keys(recipe).find(id => id === missingIngredient)];
 
@@ -1118,10 +1134,9 @@ const vocabData = {
             renderShop();
         }
 
-        // Toggle Sale Status (Products only)
         window.toggleSaleStatus = function(itemId) {
             if (playerInventory[itemId]) {
-                const item = allShopItems.find(i => i.id === itemId); // **FIX: Use allShopItems to find the item type/name**
+                const item = allShopItems.find(i => i.id === itemId); 
                 
                 if (item.type !== 'product') {
                     messageBox.textContent = `[${item.name}] is an ingredient and cannot be sold directly.`;
@@ -1136,7 +1151,7 @@ const vocabData = {
                 const currentStatus = playerInventory[itemId].isOnSale;
                 playerInventory[itemId].isOnSale = !currentStatus;
                 
-                messageBox.textContent = `${playerInventory[itemId].isOnSale ? '✅ Listed for Sale' : '❌ Stored in Inventory'} ${item.name}!`; // **FIX: Use item.name**
+                messageBox.textContent = `${playerInventory[itemId].isOnSale ? '✅ Listed for Sale' : '❌ Stored in Inventory'} ${item.name}!`; 
                 playSFX('click');
                 saveProgress();
             }
@@ -1163,11 +1178,7 @@ const vocabData = {
             const effectiveLevel = Math.min(Math.max(1, level), 4);
             const baseReviews = customerFeedback[effectiveLevel];
             const review = baseReviews[Math.floor(Math.random() * baseReviews.length)];
-            
-            // Revert item names in review to Chinese for better context flow
-            const translatedItemName = vocabData[11].find(v => v.word.toLowerCase() === item.name.toLowerCase())?.chinese || item.name;
-            
-            return review.replace(/漢堡/g, item.name).replace(/商品/g, item.name).replace(/披薩/g, item.name); // Using item.name here is intentional to show English name in Chinese text.
+            return review.replace(/漢堡/g, item.name).replace(/商品/g, item.name).replace(/披薩/g, item.name);
         }
 
         function customerArrives() {
@@ -1186,81 +1197,110 @@ const vocabData = {
             inventoryData.quantity -= 1;
             updateScore(price); 
 
-            const review = getCustomerReview(item, playerLevel);
+            // Badge System
+            const isHardProduct = item.requiredLevel >= 3;
+            const badgePoints = isHardProduct ? 2 : 1;
+            productsSold += badgePoints;
             
-            messageBox.textContent = `💰 Customer bought 1 ${item.name}! You earned ${price} Coins! Feedback: "${review}"`;
-            playSFX('correct');
+            const badgeMsg = isHardProduct ? " (Hard Product: +2 Rice Progress!)" : "";
+
+            if (productsSold >= 20) {
+                productsSold = productsSold - 20; // carry over any extra points
+                playerBadges += 1;
+                newlyEarnedRice += 1;
+                updateRiceDisplay();
+                messageBox.innerHTML = `💰 Customer bought 1 ${item.name}! Earned ${price} Coins!${badgeMsg}<br/>🎉 <b>WOW! You sold enough items! You earned a Bag of Rice 🍚! Check 'My Family' Tab!</b>`;
+                playSFX('correct'); 
+            } else {
+                const review = getCustomerReview(item, playerLevel);
+                messageBox.textContent = `💰 Customer bought 1 ${item.name}! You earned ${price} Coins!${badgeMsg} Feedback: "${review}"`;
+                playSFX('correct');
+            }
 
             if (inventoryData.quantity === 0) {
                 delete playerInventory[itemId]; 
             }
+            
+            saveProgress();
             renderShop();
         }
 
-        // ========== Maintenance Cost System (Story Version) ==========
+        function renderFamilyView() {
+            const familyContent = document.getElementById('family-content');
+            
+            const svgDad = `<svg width="80" height="100" viewBox="0 0 100 100"><rect x="25" y="50" width="50" height="50" rx="15" fill="#3b82f6" /><rect x="45" y="50" width="10" height="40" fill="#1e3a8a" /><circle cx="50" cy="35" r="25" fill="#fde68a" /><circle cx="40" cy="30" r="4" fill="#1f2937" /><circle cx="60" cy="30" r="4" fill="#1f2937" /><path d="M 40 45 Q 50 55 60 45" stroke="#1f2937" stroke-width="4" fill="transparent" /><circle cx="40" cy="30" r="10" stroke="#1f2937" stroke-width="2" fill="transparent"/><circle cx="60" cy="30" r="10" stroke="#1f2937" stroke-width="2" fill="transparent"/><line x1="50" y1="30" x2="50" y2="30" stroke="#1f2937" stroke-width="2"/></svg>`;
+            const svgMom = `<svg width="70" height="90" viewBox="0 0 100 100"><path d="M 15 100 L 50 40 L 85 100 Z" fill="#ef4444" /><circle cx="50" cy="35" r="30" fill="#451a03" /><circle cx="50" cy="35" r="22" fill="#fde68a" /><circle cx="42" cy="30" r="3" fill="#1f2937" /><circle cx="58" cy="30" r="3" fill="#1f2937" /><path d="M 42 42 Q 50 50 58 42" stroke="#1f2937" stroke-width="3" fill="transparent" /></svg>`;
+            const svgBro1 = `<svg width="60" height="75" viewBox="0 0 100 100"><rect x="25" y="45" width="50" height="55" rx="12" fill="#10b981" /><circle cx="50" cy="30" r="20" fill="#fde68a" /><circle cx="43" cy="25" r="3" fill="#1f2937" /><circle cx="57" cy="25" r="3" fill="#1f2937" /><path d="M 43 35 Q 50 42 57 35" stroke="#1f2937" stroke-width="3" fill="transparent" /><path d="M 30 18 Q 50 0 70 18 Z" fill="#b91c1c" /><rect x="50" y="13" width="30" height="6" rx="3" fill="#b91c1c" /></svg>`;
+            const svgBro2 = `<svg width="50" height="60" viewBox="0 0 100 100"><rect x="30" y="40" width="40" height="60" rx="10" fill="#f59e0b" /><circle cx="50" cy="25" r="18" fill="#fde68a" /><circle cx="44" cy="20" r="2.5" fill="#1f2937" /><circle cx="56" cy="20" r="2.5" fill="#1f2937" /><path d="M 44 30 Q 50 36 56 30" stroke="#1f2937" stroke-width="2.5" fill="transparent" /><path d="M 32 25 Q 50 -5 68 25 Z" fill="#92400e" /></svg>`;
+            
+            let jumpClasses = newlyEarnedRice > 0 ? "family-jump" : "";
+            let praiseMsg = newlyEarnedRice > 0 
+                ? `<h2 class="text-3xl font-extrabold text-yellow-300 mb-6 animate-pulse">🎉 YAY! Thank you for the rice! 🎉</h2>` 
+                : `<h2 class="text-3xl font-extrabold text-white mb-6">My Lovely Family</h2>`;
 
-// 每 5 分鐘扣一次維修費
-const MAINTENANCE_INTERVAL = 300000;
+            let bagsHTML = '';
+            if (playerBadges > 0) {
+                bagsHTML = `<div class="mt-8 pt-6 border-t border-gray-700">
+                    <h3 class="text-xl font-bold text-yellow-300 mb-4">Pantry: ${playerBadges} Bag(s) of Rice 🍚</h3>
+                    <div class="text-4xl flex flex-wrap justify-center gap-2">
+                        ${Array(playerBadges).fill('<span class="bling-badge">🍚</span>').join('')}
+                    </div>
+                </div>`;
+            } else {
+                 bagsHTML = `<p class="mt-8 pt-6 border-t border-gray-700 text-gray-400">Work hard to earn rice for the family! (0 Bags)</p>`;
+            }
 
-// 設備與劇情（壞掉原因）
-const FACILITIES = [
-    { 
-        name: "炸鍋 Fryer", 
-        icon: "🍳",
-        reason: "因為連續炸了好多份薯條，結果過熱停機了！"
-    },
-    { 
-        name: "飲料機 Soda Machine", 
-        icon: "🥤",
-        reason: "因為裡面的糖漿太久沒清理，整個堵住了！"
-    },
-    { 
-        name: "烤盤 Grill", 
-        icon: "🍔",
-        reason: "因為油垢累積太多，需要大清潔！"
-    },
-    { 
-        name: "點單機 Order Terminal", 
-        icon: "🖥️",
-        reason: "因為系統更新失敗，只剩藍色畫面了…"
-    },
-    { 
-        name: "咖啡機 Coffee Brewer", 
-        icon: "☕",
-        reason: "因為缺水太久整個當掉啦！"
-    }
-];
+            familyContent.innerHTML = `
+                ${praiseMsg}
+                <div class="flex justify-center space-x-2 sm:space-x-8 mb-8 h-32 items-end overflow-visible">
+                    <div class="text-center flex flex-col items-center ${jumpClasses} delay-2">
+                        ${svgDad}
+                        <span class="mt-2 font-bold text-blue-300">Dad</span>
+                    </div>
+                    <div class="text-center flex flex-col items-center ${jumpClasses}">
+                        ${svgMom}
+                        <span class="mt-2 font-bold text-red-300">Mom</span>
+                    </div>
+                    <div class="text-center flex flex-col items-center ${jumpClasses} delay-1">
+                        ${svgBro1}
+                        <span class="mt-2 font-bold text-green-300">Older Bro</span>
+                    </div>
+                    <div class="text-center flex flex-col items-center ${jumpClasses} delay-3">
+                        ${svgBro2}
+                        <span class="mt-2 font-bold text-yellow-300">Little Bro</span>
+                    </div>
+                </div>
+                ${bagsHTML}
+            `;
 
-// 基礎維修費（可調整）
-const BASE_MAINTENANCE_COST = 40;
-
-function applyMaintenanceCost() {
-    // 隨機挑壞掉設備
-    const facility = FACILITIES[Math.floor(Math.random() * FACILITIES.length)];
-
-    // 隨等級提升維修費（約 40–150）
-    const cost = Math.floor(BASE_MAINTENANCE_COST * (1 + playerLevel * 0.3));
-
-    if (currentScore >= cost) {
-        currentScore -= cost;
-        updateScore(0);
-
-        showMessage(`⚠️ ${facility.icon} 你的 ${facility.name} 壞掉了！${facility.reason} 需要維修：-${cost} coins`);
-    } else {
-        showMessage(`⚠️ ${facility.icon} ${facility.name} 壞掉了，但你沒有足夠的錢！快去練單字賺錢補上維修費！`);
-    }
-}
-
-// 啟動維修定時器
-setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
-
+            if (newlyEarnedRice > 0) {
+                playSFX('correct'); 
+                setTimeout(() => {
+                    newlyEarnedRice = 0;
+                    if(currentView === 'family') renderFamilyView(); // stop jumping after 3s
+                }, 3000);
+            }
+        }
 
         function renderShop() {
+            let progressHTML = `
+                <div class="mt-4">
+                    <p class="text-sm text-gray-300 font-bold mb-1">Rice Progress: ${productsSold} / 20 Points</p>
+                    <div class="w-full bg-gray-600 rounded-full h-4">
+                        <div class="bg-yellow-400 h-4 rounded-full transition-all duration-500" style="width: ${Math.min((productsSold/20)*100, 100)}%"></div>
+                    </div>
+                    <p class="text-xs text-yellow-300 mt-2 text-center font-bold">Total Rice Bags Earned: ${playerBadges} 🍚 (Check Family Tab!)</p>
+                </div>
+            `;
+
             let html = `
                 <h2 class="text-3xl font-extrabold text-center text-yellow-300 mb-4">My Shop Status</h2>
-                <div class="bg-gray-700 p-4 rounded-lg flex justify-around mb-6 text-lg font-bold">
-                    <span>Level: <span class="text-blue-400">L${playerLevel}</span> (Next Lvl: ${playerLevel <= levelThresholds.length ? levelThresholds[playerLevel - 1] || 'MAX' : 'MAX'} Coins)</span>
-                    <span>Coins: <span class="text-yellow-400">${currentScore} 💰</span></span>
+                <div class="bg-gray-700 p-4 rounded-lg mb-6">
+                    <div class="flex justify-around text-lg font-bold">
+                        <span>Level: <span class="text-blue-400">L${playerLevel}</span> (Next Lvl: ${playerLevel <= levelThresholds.length ? levelThresholds[playerLevel - 1] || 'MAX' : 'MAX'} Coins)</span>
+                        <span>Coins: <span class="text-yellow-400">${currentScore} 💰</span></span>
+                    </div>
+                    ${progressHTML}
                 </div>
                 
                 <!-- Facility Upgrades -->
@@ -1294,7 +1334,6 @@ setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
 
             html += facilityHtml + `</div>`;
 
-
             // --- Product Crafting Area ---
             html += `<h3 class="text-2xl font-bold text-yellow-300 mb-3">Product Crafting (Consume Ingredients)</h3>
                 <div id="craft-list" class="grid grid-cols-2 gap-4 mb-8">
@@ -1323,6 +1362,7 @@ setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
                         <span class="text-3xl mr-3">${product.icon}</span>
                         <div class="flex-grow">
                             <p class="font-bold text-xl">${product.name}</p>
+                            <p class="text-xs text-yellow-300 font-bold">Sells for: ~${getItemPrice(product)} 💰</p>
                             <p class="text-xs text-gray-300">Recipe: ${requiredList.join(', ')}</p>
                             <p class="text-xs text-green-400">Stock: ${(playerInventory[product.id] && playerInventory[product.id].quantity) || 0}</p>
                         </div>
@@ -1336,8 +1376,7 @@ setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
             }).join('');
             html += craftHtml + `</div>`;
 
-
-            // Inventory Area (Only shows actual products for sale toggle)
+            // Inventory Area
             html += `<h3 class="text-2xl font-bold text-red-400 mb-3">Product Inventory (Sell/Store)</h3>
                 <div id="inventory-list" class="grid grid-cols-2 gap-4 mb-8">
             `;
@@ -1347,7 +1386,6 @@ setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
                 const quantity = inventory.quantity;
                 const isOnSale = inventory.isOnSale;
 
-                // Only show products that have been crafted or stocked at least once
                 if (quantity === 0 && !isOnSale && !(item.id in playerInventory)) return ''; 
 
                 const statusText = isOnSale ? '✅ Listed' : '📦 Stored';
@@ -1376,7 +1414,6 @@ setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
 
             html += (productInventoryHtml || '<p class="text-center text-gray-400 p-4">You have no crafted products ready for sale. Go craft some!</p>') + `</div>`;
 
-
             // Ingredient Stock Area
             html += `<h3 class="text-2xl font-bold text-blue-400 mb-3">Ingredient Stock (Purchase Raw Materials)</h3>
                 <div id="buy-list" class="grid grid-cols-2 gap-4">
@@ -1404,13 +1441,10 @@ setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
             }).join('');
 
             html += ingredientBuyHtml + `</div>`;
-
-            // Hidden Reset Button is already in place at the end of shop-content
-            
             shopContent.innerHTML = html;
         }
 
-        // --- Game Stages Logic (Unchanged) ---
+        // --- Game Stages Logic ---
 
         window.startGame = function(week, stage) {
             if (isProcessing) return;
@@ -1429,80 +1463,11 @@ setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
                 initStage2(wordList);
             } else if (stage === 3) {
                 initStage3(wordList);
-            } else if (stage === 4) {
-                 initStage4(wordList);
             }
 
             messageBox.textContent = `Week ${week} - Stage ${stage} Started! Good luck!`;
         };
         
-        function initStage4(data) {
-            const totalWords = data.length;
-            
-            // **關卡四是無限練習模式，從完整清單中隨機選取**
-            const shuffledWords = shuffle([...data]); 
-            let wordIndex = 0;
-            
-            const renderPractice = (wordData) => {
-                const word = wordData.word.toLowerCase();
-                
-                gameBoard.className = 'flex flex-col items-center gap-6 p-4 bg-gray-900 rounded-lg';
-                gameBoard.innerHTML = '';
-                
-                messageBox.textContent = `✍️ Stage 4: Handwriting Practice (Word ${wordIndex + 1} / ${totalWords})`;
-                
-                const hintArea = document.createElement('div');
-                hintArea.className = 'text-center p-4 bg-gray-800 rounded-lg w-full max-w-lg shadow-xl';
-                hintArea.innerHTML = `
-                    <div class="text-4xl mb-2 font-bold text-red-300">${wordData.chinese}</div>
-                    <div class="text-lg text-gray-300">${wordData.keyword}</div>
-                `;
-                gameBoard.appendChild(hintArea);
-
-                const speakButton = document.createElement('button');
-                speakButton.className = 'stage-button rounded-xl bg-green-600 border-green-800 shadow-green-800';
-                speakButton.textContent = '🔊 Read Word';
-                speakButton.onclick = () => speakWord(wordData.word);
-                gameBoard.appendChild(speakButton);
-                
-                const inputArea = document.createElement('div');
-                inputArea.className = 'w-full max-w-lg mt-4';
-                inputArea.innerHTML = `
-                    <p class="text-left text-lg text-yellow-300 mb-2">Type the Word: </p>
-                    <input id="handwriting-input" type="text" class="w-full p-3 text-2xl text-gray-900 rounded-lg border-2 border-yellow-500 lowercase" placeholder="Spell the word here...">
-                    <button id="check-button" class="stage-button rounded-xl w-full mt-4">Check</button>
-                `;
-                gameBoard.appendChild(inputArea);
-
-                document.getElementById('check-button').onclick = () => {
-                    const inputElement = document.getElementById('handwriting-input');
-                    const typedWord = inputElement.value.toLowerCase().trim();
-
-                    if (typedWord === word) {
-                        playSFX('correct');
-                        updateScore(80);
-                        messageBox.textContent = `✅ Correct! Word '${word}' completed.`;
-                        inputElement.classList.add('bg-green-200');
-                        document.getElementById('check-button').disabled = true;
-
-                        setTimeout(() => {
-                            wordIndex = (wordIndex + 1) % totalWords; // 循環到下一個單字
-                            renderPractice(shuffledWords[wordIndex]);
-                        }, 1500);
-                    } else {
-                        playSFX('wrong');
-                        messageBox.textContent = `❌ Incorrect! Try again.`;
-                        inputElement.classList.add('bg-red-200');
-                        setTimeout(() => {
-                            inputElement.classList.remove('bg-red-200');
-                        }, 500);
-                    }
-                };
-            };
-            
-            renderPractice(shuffledWords[wordIndex]);
-        }
-
         function initStage1(data) {
             const savedState = loadActiveState();
             const targetWordsCount = 8;
@@ -1554,7 +1519,6 @@ setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
                 
                 saveActiveState({ shuffledData: shuffledData, matchedIds: currentMatchedIds });
 
-
                  if (currentMatchedIds.length === targetMatches) {
                     setStageCompleted(currentWeek, 1);
                     messageBox.textContent = `🎉 Week ${currentWeek} Stage 1 Complete!`;
@@ -1600,8 +1564,8 @@ setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
                 
                 if (card1.dataset.matchId === card2.dataset.matchId) {
                     playSFX('correct');
-                    updateScore(20); 
-                    messageBox.textContent = `⚡️ Match Success: ${card1.dataset.matchId.toLowerCase()}! Coins +50!`;
+                    updateScore(5); 
+                    messageBox.textContent = `⚡️ Match Success: ${card1.dataset.matchId.toLowerCase()}! Coins +5!`;
                     
                     setTimeout(() => {
                         card1.classList.add('matched');
@@ -1612,7 +1576,8 @@ setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
                     }, 500);
                 } else {
                     playSFX('wrong');
-                    messageBox.textContent = '❌ Match Failed! Try again!';
+                    updateScore(-10); // PENALTY APPLIED
+                    messageBox.textContent = '❌ Match Failed! Coins -10!';
                     setTimeout(() => {
                         card1.classList.remove('selected');
                         selectedConnectCard = null;
@@ -1654,19 +1619,19 @@ setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
             gameBoard.className = 'grid grid-cols-4 gap-4 p-4 bg-gray-900 rounded-lg';
             gameBoard.innerHTML = '';
             
-            selectedMemoryCards = []; 
+            selectedStage2Card = null; 
             isProcessing = false;
 
             cardData.forEach(item => {
-                const card = createMemoryCard(item, handleStage2Click);
+                const card = createStage2Card(item, handleStage2Click);
                 if (matchedIds.includes(item.matchId)) {
-                    card.classList.add('matched', 'flipped'); 
+                    card.classList.add('matched'); 
                 }
                 gameBoard.appendChild(card);
             });
 
             window.checkStage2Complete = function() {
-                const matchedCards = document.querySelectorAll('.memory-card.matched');
+                const matchedCards = document.querySelectorAll('.stage2-card.matched');
                 const matchedCount = matchedCards.length / 2;
                 const currentMatchedIds = [...new Set(Array.from(matchedCards).map(c => c.dataset.matchId))];
                 
@@ -1680,66 +1645,66 @@ setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
             }
         }
         
-        function createMemoryCard(cardData, clickHandler) {
+        function createStage2Card(cardData, clickHandler) {
             const card = document.createElement('div');
-            card.className = 'memory-card card-container transition-all transform hover:scale-105';
+            card.className = 'stage2-card card-container transition-all';
             card.dataset.matchId = cardData.matchId;
             card.dataset.type = cardData.type;
-            card.dataset.word = cardData.type === 'word' ? cardData.content : '';
-
-            const cardBack = document.createElement('div');
-            cardBack.className = 'memory-card-back rounded-xl text-3xl font-black';
-            cardBack.textContent = '?'; 
-            card.appendChild(cardBack);
-
-            const cardContent = document.createElement('div');
-            cardContent.className = 'memory-card-content p-2 text-red-800 font-black';
-            cardContent.innerHTML = cardData.type === 'word' ? 
-                `<span class="text-2xl sm:text-3xl">${cardData.content.toLowerCase()}</span>` : 
-                `<span class="text-xs sm:text-sm text-center">${cardData.content.toLowerCase()}</span>`;
-            card.appendChild(cardContent);
-
+            
+            card.innerHTML = cardData.type === 'word' ? 
+                `<span class="text-xl sm:text-2xl font-black">${cardData.content.toLowerCase()}</span>` : 
+                `<span class="text-xs sm:text-sm text-center font-bold px-1">${cardData.content.toLowerCase()}</span>`;
+                
             card.addEventListener('click', () => clickHandler(card, cardData));
             return card;
         }
 
         function handleStage2Click(card, cardData) {
-            if (isProcessing || card.classList.contains('flipped') || card.classList.contains('matched')) {
+            if (isProcessing || card.classList.contains('matched')) {
                 return;
             }
             
             playSFX('click');
 
-            card.classList.add('flipped');
-            selectedMemoryCards.push(card);
+            if (selectedStage2Card) {
+                const card1 = selectedStage2Card;
+                const card2 = card;
+                
+                if (card1.dataset.type === card2.dataset.type || card1 === card2) {
+                    card1.classList.remove('selected');
+                    card.classList.add('selected'); 
+                    selectedStage2Card = card;
+                    return;
+                }
 
-            if (selectedMemoryCards.length === 2) {
                 isProcessing = true;
-                const [card1, card2] = selectedMemoryCards;
-                const isMatch = card1.dataset.matchId === card2.dataset.matchId && card1.dataset.type !== card2.dataset.type;
-
-                if (isMatch) {
+                
+                if (card1.dataset.matchId === card2.dataset.matchId) {
                     playSFX('correct');
-                    updateScore(60); 
-                    messageBox.textContent = `⭐️ Perfect Match! ${card1.dataset.matchId.toLowerCase()}! Coins +100!`;
+                    updateScore(10); 
+                    messageBox.textContent = `⭐️ Perfect Match! ${card1.dataset.matchId.toLowerCase()}! Coins +10!`;
                     setTimeout(() => {
                         card1.classList.add('matched');
                         card2.classList.add('matched');
-                        selectedMemoryCards = [];
+                        selectedStage2Card = null;
                         isProcessing = false;
                         window.checkStage2Complete();
                     }, 500);
                 } else {
                     playSFX('wrong');
-                    messageBox.textContent = '❌ Match Failed! Focus!';
+                    updateScore(-10); // PENALTY APPLIED
+                    messageBox.textContent = '❌ Match Failed! Coins -10!';
                     setTimeout(() => {
-                        card1.classList.remove('flipped');
-                        card2.classList.remove('flipped');
-                        selectedMemoryCards = [];
+                        card1.classList.remove('selected');
+                        card2.classList.remove('selected');
+                        selectedStage2Card = null;
                         isProcessing = false;
                         window.checkStage2Complete(); 
-                    }, 1500);
+                    }, 1000);
                 }
+            } else {
+                card.classList.add('selected');
+                selectedStage2Card = card;
             }
         }
         
@@ -1877,8 +1842,8 @@ setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
 
             if (userWord === correctWord) {
                 playSFX('correct');
-                updateScore(40); 
-                messageBox.textContent = `🎉 Correct! Word: ${correctWord.toLowerCase()}! Coins +200! (Next word in 2s)`;
+                updateScore(10); 
+                messageBox.textContent = `🎉 Correct! Word: ${correctWord.toLowerCase()}! Coins +10!`;
                 
                 document.querySelectorAll('#answer-area .letter-slot').forEach(slot => {
                     slot.classList.add('bg-green-600', 'text-white', 'border-green-800');
@@ -1892,7 +1857,8 @@ setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
                 }, 2000);
             } else {
                 playSFX('wrong');
-                messageBox.textContent = `❌ Incorrect Spelling! Reassemble the letters.`;
+                updateScore(-10); // PENALTY APPLIED
+                messageBox.textContent = `❌ Incorrect Spelling! Coins -10!`;
                 
                 document.getElementById('answer-area').querySelectorAll('.letter-slot').forEach(slot => {
                     if(slot.textContent) slot.classList.add('error');
@@ -1928,9 +1894,7 @@ setInterval(applyMaintenanceCost, MAINTENANCE_INTERVAL);
             currentWeek = allWeeks[0];
 
             selectWeek(currentWeek); 
-            // **FIX: Add event listener to save progress before unload**
             window.addEventListener('beforeunload', () => {
-                // Ensure active game state is saved before the window closes
                 if (currentStage === 1) window.checkStage1Complete();
                 if (currentStage === 2) window.checkStage2Complete();
                 if (currentStage === 3) saveActiveState({ stage3Words: stage3Words, currentWordIndex: currentWordIndex });
