@@ -595,32 +595,32 @@ const vocabData = {
         const products = [
             // L1 基礎商品
             { id: 'fries', name: 'Fries', icon: '🍟', basePrice: 50, requiredLevel: 1, type: 'product', recipe: { potato: 1, oil: 1, salt: 1 } },
-            { id: 'cola', name: 'Cola', icon: '🥤', basePrice: 40, requiredLevel: 1, type: 'product', recipe: { soda: 1, ice: 2 } },
-            { id: 'burger', name: 'Burger', icon: '🍔', basePrice: 100, requiredLevel: 1, type: 'product', recipe: { bun: 2, beef: 1, lettuce: 1 } },
-            { id: 'milkshake', name: 'Milkshake', icon: '🥛', basePrice: 70, requiredLevel: 1, type: 'product', recipe: { milk: 1, icecream_base: 1 } },
+            { id: 'cola', name: 'Cola', icon: '🥤', basePrice: 60, requiredLevel: 1, type: 'product', recipe: { soda: 1, ice: 2 } },
+            { id: 'burger', name: 'Burger', icon: '🍔', basePrice: 130, requiredLevel: 1, type: 'product', recipe: { bun: 2, beef: 1, lettuce: 1 } },
+            { id: 'milkshake', name: 'Milkshake', icon: '🥛', basePrice: 80, requiredLevel: 1, type: 'product', recipe: { milk: 1, icecream_base: 1 } },
             
             // L2 解鎖商品 
-            { id: 'nuggets', name: 'Nuggets', icon: '🍗', basePrice: 120, requiredLevel: 2, type: 'product', recipe: { chicken: 2, oil: 1, salt: 1 } },
+            { id: 'nuggets', name: 'Nuggets', icon: '🍗', basePrice: 140, requiredLevel: 2, type: 'product', recipe: { chicken: 2, oil: 1, salt: 1 } },
             { id: 'hotdog', name: 'Hot Dog', icon: '🌭', basePrice: 110, requiredLevel: 2, type: 'product', recipe: { hotdog_bun: 1, sausage: 1, sauce: 1 } },
             
             // L3 解鎖商品 
             { id: 'pizza', name: 'Pizza', icon: '🍕', basePrice: 250, requiredLevel: 3, type: 'product', recipe: { dough: 1, cheese: 1, tomato_sauce: 1 } },
-            { id: 'icecream', name: 'Ice Cream Sundae', icon: '🍦', basePrice: 150, requiredLevel: 3, type: 'product', recipe: { icecream_base: 2, syrup: 1 } },
+            { id: 'icecream', name: 'Ice Cream Sundae', icon: '🍦', basePrice: 180, requiredLevel: 3, type: 'product', recipe: { icecream_base: 2, syrup: 1 } },
 
             // L4 解鎖商品 
             { id: 'salad', name: 'Salad', icon: '🥗', basePrice: 180, requiredLevel: 4, type: 'product', recipe: { lettuce: 2, dressing: 1, chicken: 1 } },
-            { id: 'coffee', name: 'Coffee', icon: '☕', basePrice: 90, requiredLevel: 4, type: 'product', recipe: { coffee_bean: 1, milk: 1 } },
+            { id: 'coffee', name: 'Coffee', icon: '☕', basePrice: 120, requiredLevel: 4, type: 'product', recipe: { coffee_bean: 1, milk: 1 } },
 
             // L5 解鎖商品 
-            { id: 'taco', name: 'Taco', icon: '🌮', basePrice: 300, requiredLevel: 5, type: 'product', recipe: { tortilla: 2, beef: 1, cheese: 1, sauce: 1 } },
-            { id: 'sushi', name: 'Sushi Set', icon: '🍣', basePrice: 350, requiredLevel: 5, type: 'product', recipe: { rice: 2, fish: 1 } },
+            { id: 'taco', name: 'Taco', icon: '🌮', basePrice: 350, requiredLevel: 5, type: 'product', recipe: { tortilla: 2, beef: 1, cheese: 1, sauce: 1 } },
+            { id: 'sushi', name: 'Sushi Set', icon: '🍣', basePrice: 400, requiredLevel: 5, type: 'product', recipe: { rice: 2, fish: 1 } },
         ];
 
         // 原料列表 (Ingredients) - Costs Diamonds 💎
         const ingredients = [
             { id: 'potato', name: 'Potato', icon: '🥔', baseCost: 5, type: 'ingredient' },
             { id: 'oil', name: 'Frying Oil', icon: '🏺', baseCost: 3, type: 'ingredient' },
-            { id: 'salt', name: 'Salt', icon: '🧂', baseCost: 3, type: 'ingredient' },
+            { id: 'salt', name: 'Salt', icon: '🧂', baseCost: 2, type: 'ingredient' },
             { id: 'soda', name: 'Soda Syrup', icon: '💧', baseCost: 5, type: 'ingredient' },
             { id: 'ice', name: 'Ice', icon: '🧊', baseCost: 3, type: 'ingredient' },
             { id: 'bun', name: 'Burger Bun', icon: '🍞', baseCost: 5, type: 'ingredient' },
@@ -632,15 +632,15 @@ const vocabData = {
             { id: 'hotdog_bun', name: 'Hot Dog Bun', icon: '🥖', baseCost: 6, type: 'ingredient' },
             { id: 'sausage', name: 'Sausage', icon: '🌭', baseCost: 8, type: 'ingredient' },
             { id: 'sauce', name: 'Sauce Packet', icon: '🥫', baseCost: 2, type: 'ingredient' },
-            { id: 'dough', name: 'Pizza Dough', icon: '🫓', baseCost: 8, type: 'ingredient' },
-            { id: 'cheese', name: 'Cheese', icon: '🧀', baseCost: 8, type: 'ingredient' },
-            { id: 'tomato_sauce', name: 'Tomato Sauce', icon: '🍅', baseCost: 5, type: 'ingredient' },
+            { id: 'dough', name: 'Pizza Dough', icon: '🫓', baseCost: 12, type: 'ingredient' },
+            { id: 'cheese', name: 'Cheese', icon: '🧀', baseCost: 12, type: 'ingredient' },
+            { id: 'tomato_sauce', name: 'Tomato Sauce', icon: '🍅', baseCost: 8, type: 'ingredient' },
             { id: 'syrup', name: 'Sundae Syrup', icon: '🍯', baseCost: 4, type: 'ingredient' },
             { id: 'dressing', name: 'Salad Dressing', icon: '🍾', baseCost: 4, type: 'ingredient' },
-            { id: 'coffee_bean', name: 'Coffee Beans', icon: '☕', baseCost: 6, type: 'ingredient' },
-            { id: 'tortilla', name: 'Tortilla', icon: '🌮', baseCost: 6, type: 'ingredient' },
-            { id: 'rice', name: 'Sushi Rice', icon: '🍚', baseCost: 5, type: 'ingredient' },
-            { id: 'fish', name: 'Fish Fillet', icon: '🐟', baseCost: 12, type: 'ingredient' },
+            { id: 'coffee_bean', name: 'Coffee Beans', icon: '☕', baseCost: 10, type: 'ingredient' },
+            { id: 'tortilla', name: 'Tortilla', icon: '🌮', baseCost: 10, type: 'ingredient' },
+            { id: 'rice', name: 'Sushi Rice', icon: '🍚', baseCost: 10, type: 'ingredient' },
+            { id: 'fish', name: 'Fish Fillet', icon: '🐟', baseCost: 20, type: 'ingredient' },
         ];
         
         // Combined list for easy lookup
@@ -700,8 +700,9 @@ const vocabData = {
         let playerLevel = 1;
         let playerInventory = {}; 
         let productsSold = 0;
-        let playerBadges = 2; // Start with a bonus of 2 Bags of Rice!
+        let playerBadges = 0; // Start with 0
         let newlyEarnedRice = 0; // Trigger for happy animation
+        let bonusRiceClaimed = false; // Track if bonus is claimed
 
         // Family Rice Distribution
         let familyRice = { dad: 0, mom: 0, bro1: 0, bro2: 0 };
@@ -869,8 +870,9 @@ const vocabData = {
                 activeGameState = data.activeGameState || {};
                 shopFacilities = data.shopFacilities || {}; 
                 productsSold = data.productsSold || 0;
-                playerBadges = data.playerBadges !== undefined ? data.playerBadges : 2;
+                playerBadges = data.playerBadges !== undefined ? data.playerBadges : 0;
                 familyRice = data.familyRice || { dad: 0, mom: 0, bro1: 0, bro2: 0 };
+                bonusRiceClaimed = data.bonusRiceClaimed || false;
 
                 // Migrate old array logic to new play count object logic
                 for (let w in completedStages) {
@@ -903,7 +905,8 @@ const vocabData = {
                 shopFacilities: shopFacilities, 
                 productsSold: productsSold,
                 playerBadges: playerBadges,
-                familyRice: familyRice
+                familyRice: familyRice,
+                bonusRiceClaimed: bonusRiceClaimed
             };
             localStorage.setItem('vocabAdventureProgress', JSON.stringify(dataToSave));
             updateUI();
@@ -923,9 +926,10 @@ const vocabData = {
             activeGameState = {};
             shopFacilities = {}; 
             productsSold = 0;
-            playerBadges = 2; // Reset with bonus 2 bags
+            playerBadges = 0; 
             newlyEarnedRice = 0;
             familyRice = { dad: 0, mom: 0, bro1: 0, bro2: 0 };
+            bonusRiceClaimed = false;
             
             facilityUpgrades.forEach(f => { shopFacilities[f.id] = 0; });
 
@@ -1274,8 +1278,22 @@ const vocabData = {
             }
         };
 
+        window.claimBonusRice = function() {
+            if (!bonusRiceClaimed) {
+                bonusRiceClaimed = true;
+                playerBadges += 2;
+                newlyEarnedRice = 1; 
+                playSFX('correct');
+                updateRiceDisplay();
+                saveProgress();
+                renderFamilyView();
+                messageBox.innerHTML = `🎉 <b>WOW! You claimed 2 Bonus Bags of Rice 🍚! Give them to your family!</b>`;
+            }
+        };
+
         function renderFamilyView() {
             const familyContent = document.getElementById('family-content');
+            familyContent.classList.add('relative'); // Ensure relative positioning for the absolute button
             
             const svgDad = `<svg width="80" height="100" viewBox="0 0 100 100"><rect x="25" y="50" width="50" height="50" rx="15" fill="#3b82f6" /><rect x="45" y="50" width="10" height="40" fill="#1e3a8a" /><circle cx="50" cy="35" r="25" fill="#fde68a" /><circle cx="40" cy="30" r="4" fill="#1f2937" /><circle cx="60" cy="30" r="4" fill="#1f2937" /><path d="M 40 45 Q 50 55 60 45" stroke="#1f2937" stroke-width="4" fill="transparent" /><circle cx="40" cy="30" r="10" stroke="#1f2937" stroke-width="2" fill="transparent"/><circle cx="60" cy="30" r="10" stroke="#1f2937" stroke-width="2" fill="transparent"/><line x1="50" y1="30" x2="50" y2="30" stroke="#1f2937" stroke-width="2"/></svg>`;
             const svgMom = `<svg width="70" height="90" viewBox="0 0 100 100"><path d="M 15 100 L 50 40 L 85 100 Z" fill="#ef4444" /><circle cx="50" cy="35" r="30" fill="#451a03" /><circle cx="50" cy="35" r="22" fill="#fde68a" /><circle cx="42" cy="30" r="3" fill="#1f2937" /><circle cx="58" cy="30" r="3" fill="#1f2937" /><path d="M 42 42 Q 50 50 58 42" stroke="#1f2937" stroke-width="3" fill="transparent" /></svg>`;
@@ -1319,7 +1337,19 @@ const vocabData = {
                 `;
             };
 
+            let bonusButtonHTML = '';
+            if (!bonusRiceClaimed) {
+                bonusButtonHTML = `
+                    <div class="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
+                        <button onclick="claimBonusRice()" class="px-3 py-2 bg-yellow-500 hover:bg-yellow-400 text-gray-900 rounded-lg font-black shadow-lg transform transition active:scale-95 border-2 border-yellow-700 text-xs sm:text-sm animate-bounce">
+                            🎁 Claim 2 Bonus Rice!
+                        </button>
+                    </div>
+                `;
+            }
+
             familyContent.innerHTML = `
+                ${bonusButtonHTML}
                 ${praiseMsg}
                 <div class="flex justify-center space-x-2 sm:space-x-8 mb-8 h-40 items-end overflow-visible">
                     ${createMember('dad', 'Dad', 'text-blue-300', svgDad, 'delay-2')}
