@@ -230,19 +230,24 @@
 <body class="p-4 md:p-10">
 
     <!-- Main Game Container -->
-    <div id="game-container" class="w-full max-w-5xl mx-auto p-6 bg-gray-800 rounded-xl shadow-2xl border-4 border-yellow-500">
+    <div id="game-container" class="w-full max-w-5xl mx-auto p-4 sm:p-6 bg-gray-800 rounded-xl shadow-2xl border-4 border-yellow-500">
         
         <!-- Title and Score Display -->
-        <div class="flex justify-between items-center mb-4">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
             <h1 class="roblox-title text-3xl sm:text-4xl font-extrabold text-yellow-300 flex items-center">
                 <span class="text-5xl mr-3 transform -rotate-12">💡</span> Vocab Adventure!
             </h1>
-            <div class="flex items-center space-x-2 sm:space-x-4">
+            <div class="flex flex-wrap justify-center items-center gap-2">
                  <div id="level-display" class="bg-blue-600 px-3 py-2 rounded-lg font-bold text-sm sm:text-lg text-white shadow-lg border-2 border-blue-800">
-                    Level: 1
+                    Lvl: 1
                 </div>
+                <!-- Coins are now purely for Shop Upgrades -->
                 <div id="score-display" class="bg-yellow-600 px-3 py-2 rounded-lg font-bold text-sm sm:text-xl text-gray-900 shadow-lg border-2 border-yellow-800 relative">
-                    Coins: 0
+                    💰: 0
+                </div>
+                <!-- Diamonds are now earned from Vocab and used to buy Ingredients -->
+                <div id="diamond-display" class="bg-cyan-600 px-3 py-2 rounded-lg font-bold text-sm sm:text-xl text-white shadow-lg border-2 border-cyan-800 relative">
+                    💎: 0
                 </div>
                 <div id="rice-display" class="bg-green-600 px-3 py-2 rounded-lg font-bold text-sm sm:text-xl text-white shadow-lg border-2 border-green-800 relative">
                     🍚: 0
@@ -257,8 +262,8 @@
         
         <!-- Main Navigation -->
         <div id="main-nav" class="flex flex-wrap justify-center gap-4 mb-6">
-            <button id="nav-game" class="stage-button rounded-xl" onclick="showView('game')">Vocab Stages</button>
-            <button id="nav-shop" class="stage-button rounded-xl" onclick="showView('shop')">My Fast Food Shop 🍔</button>
+            <button id="nav-game" class="stage-button rounded-xl" onclick="showView('game')">Vocab Stages (Get 💎)</button>
+            <button id="nav-shop" class="stage-button rounded-xl bg-purple-600 border-purple-800 shadow-purple-800 text-white" onclick="showView('shop')">My Fast Food Shop 🍔</button>
             <button id="nav-family" class="stage-button rounded-xl bg-pink-600 border-pink-800 shadow-pink-800 text-white" onclick="showView('family')">My Family 👨‍👩‍👦‍👦</button>
         </div>
 
@@ -295,7 +300,7 @@
             </div>
             <div class="text-center mt-8">
                 <button id="reset-progress-button" class="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded-lg text-sm transition-colors" onclick="resetGameProgress()">
-                    Reset All Progress (Coins, Level & Rice)
+                    Reset All Progress (Coins, Diamonds, Level & Rice)
                 </button>
             </div>
         </div>
@@ -309,7 +314,7 @@
 
         <!-- Copyright Note -->
         <div class="text-center text-sm mt-8 text-gray-400">
-            <p>Powered by Gemini Engine v2.5. Challenge for Coins!</p>
+            <p>Powered by Gemini Engine v2.5. Challenge for Diamonds!</p>
         </div>
     </div>
 
@@ -584,58 +589,58 @@ const vocabData = {
     ]
 };
 
-        // --- 商品和原料定義 (Prices adjusted to force vocab practice) ---
+        // --- 商品和原料定義 ---
 
-        // 成品列表 (Final Products) - Base prices are intentionally lower than ingredient costs
+        // 成品列表 (Final Products) - Sell for Coins 💰 (Restored to profitable prices)
         const products = [
             // L1 基礎商品
-            { id: 'fries', name: 'Fries', icon: '🍟', basePrice: 15, requiredLevel: 1, type: 'product', recipe: { potato: 1, oil: 1, salt: 1 } },
-            { id: 'cola', name: 'Cola', icon: '🥤', basePrice: 5, requiredLevel: 1, type: 'product', recipe: { soda: 1, ice: 1 } },
-            { id: 'burger', name: 'Burger', icon: '🍔', basePrice: 25, requiredLevel: 1, type: 'product', recipe: { bun: 2, beef: 1, lettuce: 1 } },
-            { id: 'milkshake', name: 'Milkshake', icon: '🥛', basePrice: 15, requiredLevel: 1, type: 'product', recipe: { milk: 1, icecream_base: 1 } },
+            { id: 'fries', name: 'Fries', icon: '🍟', basePrice: 50, requiredLevel: 1, type: 'product', recipe: { potato: 1, oil: 1, salt: 1 } },
+            { id: 'cola', name: 'Cola', icon: '🥤', basePrice: 40, requiredLevel: 1, type: 'product', recipe: { soda: 1, ice: 2 } },
+            { id: 'burger', name: 'Burger', icon: '🍔', basePrice: 100, requiredLevel: 1, type: 'product', recipe: { bun: 2, beef: 1, lettuce: 1 } },
+            { id: 'milkshake', name: 'Milkshake', icon: '🥛', basePrice: 70, requiredLevel: 1, type: 'product', recipe: { milk: 1, icecream_base: 1 } },
             
             // L2 解鎖商品 
-            { id: 'nuggets', name: 'Nuggets', icon: '🍗', basePrice: 25, requiredLevel: 2, type: 'product', recipe: { chicken: 2, oil: 1, salt: 1 } },
-            { id: 'hotdog', name: 'Hot Dog', icon: '🌭', basePrice: 20, requiredLevel: 2, type: 'product', recipe: { hotdog_bun: 1, sausage: 1, sauce: 1 } },
+            { id: 'nuggets', name: 'Nuggets', icon: '🍗', basePrice: 120, requiredLevel: 2, type: 'product', recipe: { chicken: 2, oil: 1, salt: 1 } },
+            { id: 'hotdog', name: 'Hot Dog', icon: '🌭', basePrice: 110, requiredLevel: 2, type: 'product', recipe: { hotdog_bun: 1, sausage: 1, sauce: 1 } },
             
             // L3 解鎖商品 
-            { id: 'pizza', name: 'Pizza', icon: '🍕', basePrice: 25, requiredLevel: 3, type: 'product', recipe: { dough: 1, cheese: 1, tomato_sauce: 1 } },
-            { id: 'icecream', name: 'Ice Cream Sundae', icon: '🍦', basePrice: 25, requiredLevel: 3, type: 'product', recipe: { icecream_base: 2, syrup: 1 } },
+            { id: 'pizza', name: 'Pizza', icon: '🍕', basePrice: 250, requiredLevel: 3, type: 'product', recipe: { dough: 1, cheese: 1, tomato_sauce: 1 } },
+            { id: 'icecream', name: 'Ice Cream Sundae', icon: '🍦', basePrice: 150, requiredLevel: 3, type: 'product', recipe: { icecream_base: 2, syrup: 1 } },
 
             // L4 解鎖商品 
-            { id: 'salad', name: 'Salad', icon: '🥗', basePrice: 25, requiredLevel: 4, type: 'product', recipe: { lettuce: 2, dressing: 1, chicken: 1 } },
-            { id: 'coffee', name: 'Coffee', icon: '☕', basePrice: 15, requiredLevel: 4, type: 'product', recipe: { coffee_bean: 1, milk: 1 } },
+            { id: 'salad', name: 'Salad', icon: '🥗', basePrice: 180, requiredLevel: 4, type: 'product', recipe: { lettuce: 2, dressing: 1, chicken: 1 } },
+            { id: 'coffee', name: 'Coffee', icon: '☕', basePrice: 90, requiredLevel: 4, type: 'product', recipe: { coffee_bean: 1, milk: 1 } },
 
             // L5 解鎖商品 
-            { id: 'taco', name: 'Taco', icon: '🌮', basePrice: 40, requiredLevel: 5, type: 'product', recipe: { tortilla: 2, beef: 1, cheese: 1, sauce: 1 } },
-            { id: 'sushi', name: 'Sushi Set', icon: '🍣', basePrice: 25, requiredLevel: 5, type: 'product', recipe: { rice: 2, fish: 1 } },
+            { id: 'taco', name: 'Taco', icon: '🌮', basePrice: 300, requiredLevel: 5, type: 'product', recipe: { tortilla: 2, beef: 1, cheese: 1, sauce: 1 } },
+            { id: 'sushi', name: 'Sushi Set', icon: '🍣', basePrice: 350, requiredLevel: 5, type: 'product', recipe: { rice: 2, fish: 1 } },
         ];
 
-        // 原料列表 (Ingredients)
+        // 原料列表 (Ingredients) - Costs Diamonds 💎
         const ingredients = [
-            { id: 'potato', name: 'Potato', icon: '🥔', baseCost: 15, type: 'ingredient' },
-            { id: 'oil', name: 'Frying Oil', icon: '🏺', baseCost: 10, type: 'ingredient' },
-            { id: 'salt', name: 'Salt', icon: '🧂', baseCost: 5, type: 'ingredient' },
-            { id: 'soda', name: 'Soda Syrup', icon: '💧', baseCost: 10, type: 'ingredient' },
-            { id: 'ice', name: 'Ice', icon: '🧊', baseCost: 5, type: 'ingredient' },
-            { id: 'bun', name: 'Burger Bun', icon: '🍞', baseCost: 10, type: 'ingredient' },
-            { id: 'beef', name: 'Beef Patty', icon: '🥩', baseCost: 25, type: 'ingredient' },
-            { id: 'lettuce', name: 'Lettuce', icon: '🥬', baseCost: 10, type: 'ingredient' },
-            { id: 'milk', name: 'Milk', icon: '🥛', baseCost: 15, type: 'ingredient' },
-            { id: 'icecream_base', name: 'Ice Cream Base', icon: '🍦', baseCost: 20, type: 'ingredient' },
-            { id: 'chicken', name: 'Chicken Pieces', icon: '🐔', baseCost: 20, type: 'ingredient' },
-            { id: 'hotdog_bun', name: 'Hot Dog Bun', icon: '🥖', baseCost: 15, type: 'ingredient' },
-            { id: 'sausage', name: 'Sausage', icon: '🌭', baseCost: 20, type: 'ingredient' },
-            { id: 'sauce', name: 'Sauce Packet', icon: '🥫', baseCost: 5, type: 'ingredient' },
-            { id: 'dough', name: 'Pizza Dough', icon: '🫓', baseCost: 20, type: 'ingredient' },
-            { id: 'cheese', name: 'Cheese', icon: '🧀', baseCost: 20, type: 'ingredient' },
-            { id: 'tomato_sauce', name: 'Tomato Sauce', icon: '🍅', baseCost: 15, type: 'ingredient' },
-            { id: 'syrup', name: 'Sundae Syrup', icon: '🍯', baseCost: 10, type: 'ingredient' },
-            { id: 'dressing', name: 'Salad Dressing', icon: '🍾', baseCost: 10, type: 'ingredient' },
-            { id: 'coffee_bean', name: 'Coffee Beans', icon: '☕', baseCost: 15, type: 'ingredient' },
-            { id: 'tortilla', name: 'Tortilla', icon: '🌮', baseCost: 15, type: 'ingredient' },
-            { id: 'rice', name: 'Sushi Rice', icon: '🍚', baseCost: 10, type: 'ingredient' },
-            { id: 'fish', name: 'Fish Fillet', icon: '🐟', baseCost: 30, type: 'ingredient' },
+            { id: 'potato', name: 'Potato', icon: '🥔', baseCost: 5, type: 'ingredient' },
+            { id: 'oil', name: 'Frying Oil', icon: '🏺', baseCost: 3, type: 'ingredient' },
+            { id: 'salt', name: 'Salt', icon: '🧂', baseCost: 3, type: 'ingredient' },
+            { id: 'soda', name: 'Soda Syrup', icon: '💧', baseCost: 5, type: 'ingredient' },
+            { id: 'ice', name: 'Ice', icon: '🧊', baseCost: 3, type: 'ingredient' },
+            { id: 'bun', name: 'Burger Bun', icon: '🍞', baseCost: 5, type: 'ingredient' },
+            { id: 'beef', name: 'Beef Patty', icon: '🥩', baseCost: 10, type: 'ingredient' },
+            { id: 'lettuce', name: 'Lettuce', icon: '🥬', baseCost: 4, type: 'ingredient' },
+            { id: 'milk', name: 'Milk', icon: '🥛', baseCost: 5, type: 'ingredient' },
+            { id: 'icecream_base', name: 'Ice Cream Base', icon: '🍦', baseCost: 8, type: 'ingredient' },
+            { id: 'chicken', name: 'Chicken Pieces', icon: '🐔', baseCost: 8, type: 'ingredient' },
+            { id: 'hotdog_bun', name: 'Hot Dog Bun', icon: '🥖', baseCost: 6, type: 'ingredient' },
+            { id: 'sausage', name: 'Sausage', icon: '🌭', baseCost: 8, type: 'ingredient' },
+            { id: 'sauce', name: 'Sauce Packet', icon: '🥫', baseCost: 2, type: 'ingredient' },
+            { id: 'dough', name: 'Pizza Dough', icon: '🫓', baseCost: 8, type: 'ingredient' },
+            { id: 'cheese', name: 'Cheese', icon: '🧀', baseCost: 8, type: 'ingredient' },
+            { id: 'tomato_sauce', name: 'Tomato Sauce', icon: '🍅', baseCost: 5, type: 'ingredient' },
+            { id: 'syrup', name: 'Sundae Syrup', icon: '🍯', baseCost: 4, type: 'ingredient' },
+            { id: 'dressing', name: 'Salad Dressing', icon: '🍾', baseCost: 4, type: 'ingredient' },
+            { id: 'coffee_bean', name: 'Coffee Beans', icon: '☕', baseCost: 6, type: 'ingredient' },
+            { id: 'tortilla', name: 'Tortilla', icon: '🌮', baseCost: 6, type: 'ingredient' },
+            { id: 'rice', name: 'Sushi Rice', icon: '🍚', baseCost: 5, type: 'ingredient' },
+            { id: 'fish', name: 'Fish Fillet', icon: '🐟', baseCost: 12, type: 'ingredient' },
         ];
         
         // Combined list for easy lookup
@@ -690,12 +695,17 @@ const vocabData = {
         let isProcessing = false;
         
         // Economy and Level
-        let currentScore = 0; 
+        let currentScore = 0; // Coins 💰
+        let currentDiamonds = 0; // Diamonds 💎
         let playerLevel = 1;
         let playerInventory = {}; 
         let productsSold = 0;
-        let playerBadges = 0;
+        let playerBadges = 2; // Start with a bonus of 2 Bags of Rice!
         let newlyEarnedRice = 0; // Trigger for happy animation
+
+        // Family Rice Distribution
+        let familyRice = { dad: 0, mom: 0, bro1: 0, bro2: 0 };
+        const FAMILY_RICE_GOALS = { dad: 5, mom: 5, bro1: 3, bro2: 3 };
 
         const levelThresholds = [4000, 9000, 18000, 30000, 60000]; 
 
@@ -715,7 +725,7 @@ const vocabData = {
         const totalStage3Words = 10; 
 
         // Timer
-        const BASE_CUSTOMER_INTERVAL = 40000; 
+        const BASE_CUSTOMER_INTERVAL = 20000; 
         let customerTimer = null; 
 
         // **SFX Setup**
@@ -761,6 +771,7 @@ const vocabData = {
         const messageBox = document.getElementById('message-box');
         const weekSelector = document.getElementById('week-selector');
         const scoreDisplay = document.getElementById('score-display');
+        const diamondDisplay = document.getElementById('diamond-display');
         const levelDisplay = document.getElementById('level-display');
         const riceDisplay = document.getElementById('rice-display');
         const shopContent = document.getElementById('shop-content');
@@ -779,15 +790,20 @@ const vocabData = {
             return array;
         }
 
-        function showScoreFeedback(points) {
+        function showScoreFeedback(points, type) {
             const feedback = document.createElement('div');
-            feedback.textContent = points > 0 ? `+${points}` : `${points}`;
-            feedback.className = `absolute font-extrabold text-2xl ${points > 0 ? 'text-yellow-300' : 'text-red-500'} pointer-events-none transition-all duration-1000 opacity-100 z-50`;
+            const symbol = type === 'diamond' ? '💎' : '💰';
+            const color = type === 'diamond' ? 'text-cyan-300' : 'text-yellow-300';
+            const errorColor = 'text-red-500';
             
-            const scoreRect = scoreDisplay.getBoundingClientRect();
+            feedback.textContent = points > 0 ? `+${points} ${symbol}` : `${points} ${symbol}`;
+            feedback.className = `absolute font-extrabold text-2xl ${points > 0 ? color : errorColor} pointer-events-none transition-all duration-1000 opacity-100 z-50`;
+            
+            const targetDisplay = type === 'diamond' ? diamondDisplay : scoreDisplay;
+            const rect = targetDisplay.getBoundingClientRect();
             feedback.style.position = 'fixed'; 
-            feedback.style.right = `${window.innerWidth - scoreRect.right - 20}px`;
-            feedback.style.top = `${scoreRect.top + window.scrollY}px`;
+            feedback.style.right = `${window.innerWidth - rect.right - 20}px`;
+            feedback.style.top = `${rect.top + window.scrollY}px`;
             
             document.body.appendChild(feedback);
             
@@ -805,7 +821,7 @@ const vocabData = {
 
         function updateLevel(newLevel) {
             playerLevel = newLevel;
-            levelDisplay.textContent = `Level: ${playerLevel}`;
+            levelDisplay.textContent = `Lvl: ${playerLevel}`;
             messageBox.textContent = `Congrats! You reached Level ${playerLevel}! New items and facilities unlocked!`;
             playSFX('correct'); 
         }
@@ -826,11 +842,18 @@ const vocabData = {
             if (riceDisplay) riceDisplay.textContent = `🍚: ${playerBadges}`;
         }
 
-        function updateScore(points) {
+        function updateCoins(points) {
             currentScore = Math.max(0, currentScore + points); // Prevent going below 0
-            scoreDisplay.textContent = `Coins: ${currentScore}`;
-            showScoreFeedback(points); 
+            scoreDisplay.textContent = `💰: ${currentScore}`;
+            if (points !== 0) showScoreFeedback(points, 'coin'); 
             checkLevelUp();
+            saveProgress();
+        }
+
+        function updateDiamonds(points) {
+            currentDiamonds = Math.max(0, currentDiamonds + points); // Prevent going below 0
+            diamondDisplay.textContent = `💎: ${currentDiamonds}`;
+            if (points !== 0) showScoreFeedback(points, 'diamond'); 
             saveProgress();
         }
 
@@ -840,12 +863,14 @@ const vocabData = {
                 const data = JSON.parse(savedProgress);
                 completedStages = data.completedStages || {};
                 currentScore = data.currentScore || 0;
+                currentDiamonds = data.currentDiamonds || 0;
                 playerLevel = data.playerLevel || 1;
                 playerInventory = data.playerInventory || {};
                 activeGameState = data.activeGameState || {};
                 shopFacilities = data.shopFacilities || {}; 
                 productsSold = data.productsSold || 0;
-                playerBadges = data.playerBadges || 0;
+                playerBadges = data.playerBadges !== undefined ? data.playerBadges : 2;
+                familyRice = data.familyRice || { dad: 0, mom: 0, bro1: 0, bro2: 0 };
 
                 // Migrate old array logic to new play count object logic
                 for (let w in completedStages) {
@@ -861,8 +886,9 @@ const vocabData = {
                     shopFacilities[f.id] = 0;
                 }
             });
-            scoreDisplay.textContent = `Coins: ${currentScore}`;
-            levelDisplay.textContent = `Level: ${playerLevel}`;
+            scoreDisplay.textContent = `💰: ${currentScore}`;
+            diamondDisplay.textContent = `💎: ${currentDiamonds}`;
+            levelDisplay.textContent = `Lvl: ${playerLevel}`;
             updateRiceDisplay();
         }
 
@@ -870,12 +896,14 @@ const vocabData = {
             const dataToSave = {
                 completedStages: completedStages,
                 currentScore: currentScore,
+                currentDiamonds: currentDiamonds,
                 playerLevel: playerLevel,
                 playerInventory: playerInventory,
                 activeGameState: activeGameState,
                 shopFacilities: shopFacilities, 
                 productsSold: productsSold,
-                playerBadges: playerBadges
+                playerBadges: playerBadges,
+                familyRice: familyRice
             };
             localStorage.setItem('vocabAdventureProgress', JSON.stringify(dataToSave));
             updateUI();
@@ -888,14 +916,16 @@ const vocabData = {
 
             localStorage.removeItem('vocabAdventureProgress');
             currentScore = 0;
+            currentDiamonds = 0;
             playerLevel = 1;
             playerInventory = {};
             completedStages = {};
             activeGameState = {};
             shopFacilities = {}; 
             productsSold = 0;
-            playerBadges = 0;
+            playerBadges = 2; // Reset with bonus 2 bags
             newlyEarnedRice = 0;
+            familyRice = { dad: 0, mom: 0, bro1: 0, bro2: 0 };
             
             facilityUpgrades.forEach(f => { shopFacilities[f.id] = 0; });
 
@@ -906,6 +936,8 @@ const vocabData = {
             stopCustomerTimer();
             stopBGM();
             
+            scoreDisplay.textContent = `💰: ${currentScore}`;
+            diamondDisplay.textContent = `💎: ${currentDiamonds}`;
             updateRiceDisplay();
             messageBox.textContent = '✅ All progress cleared. Welcome back!';
             showView('game');
@@ -1026,15 +1058,15 @@ const vocabData = {
         }
     
         function getItemPrice(item) {
-            // Simplified to ensure selling operates at a net loss to encourage vocab practice
+            // Sells for Coins 💰
             const facilityMultiplier = getFacilityPriceMultiplier();
             return Math.floor(item.basePrice * facilityMultiplier);
         }
 
         function getItemCost(item) {
-            // Static cost to ensure a predictable loss margin, affected by smart supplier
+            // Bought with Diamonds 💎
             const facilityMultiplier = getFacilityCostMultiplier();
-            return Math.floor(item.baseCost * facilityMultiplier);
+            return Math.max(1, Math.floor(item.baseCost * facilityMultiplier));
         }
         
         function getCustomerInterval() {
@@ -1053,15 +1085,16 @@ const vocabData = {
             const nextLevelData = facility.levels[currentLevel];
             const cost = nextLevelData.cost;
 
+            // Facilities cost Coins 💰
             if (currentScore >= cost) {
-                updateScore(-cost);
+                updateCoins(-cost);
                 shopFacilities[facilityId] = currentLevel + 1;
                 messageBox.textContent = `Facility Upgrade Success! ${facility.name} reached Level ${currentLevel + 1}!`;
                 playSFX('correct');
                 stopCustomerTimer();
                 startCustomerTimer();
             } else {
-                messageBox.textContent = `Insufficient Coins! Need ${cost} Coins.`;
+                messageBox.textContent = `Insufficient Coins! Need ${cost} 💰.`;
                 playSFX('wrong');
             }
             renderShop();
@@ -1077,16 +1110,17 @@ const vocabData = {
                  return;
             }
 
-            if (currentScore >= cost) {
-                updateScore(-cost);
+            // Ingredients cost Diamonds 💎
+            if (currentDiamonds >= cost) {
+                updateDiamonds(-cost);
                 const isProduct = item.type === 'product';
                 playerInventory[itemId] = playerInventory[itemId] || { quantity: 0, isOnSale: isProduct };
                 playerInventory[itemId].quantity += 1;
                 playerInventory[itemId].cost = item.baseCost; 
-                messageBox.textContent = `Stocked 1 ${item.name}! Coins -${cost}.`;
+                messageBox.textContent = `Stocked 1 ${item.name}! Diamonds -${cost} 💎.`;
                 playSFX('correct');
             } else {
-                messageBox.textContent = `Insufficient Coins! Cost: ${cost} Coins.`;
+                messageBox.textContent = `Insufficient Diamonds! Cost: ${cost} 💎. Play Vocab Stages!`;
                 playSFX('wrong');
             }
             renderShop();
@@ -1195,7 +1229,7 @@ const vocabData = {
             const price = getItemPrice(item);
             
             inventoryData.quantity -= 1;
-            updateScore(price); 
+            updateCoins(price); 
 
             // Badge System
             const isHardProduct = item.requiredLevel >= 3;
@@ -1209,11 +1243,11 @@ const vocabData = {
                 playerBadges += 1;
                 newlyEarnedRice += 1;
                 updateRiceDisplay();
-                messageBox.innerHTML = `💰 Customer bought 1 ${item.name}! Earned ${price} Coins!${badgeMsg}<br/>🎉 <b>WOW! You sold enough items! You earned a Bag of Rice 🍚! Check 'My Family' Tab!</b>`;
+                messageBox.innerHTML = `💰 Customer bought 1 ${item.name}! Earned ${price} 💰!${badgeMsg}<br/>🎉 <b>WOW! You sold enough items! You earned a Bag of Rice 🍚! Check 'My Family' Tab!</b>`;
                 playSFX('correct'); 
             } else {
                 const review = getCustomerReview(item, playerLevel);
-                messageBox.textContent = `💰 Customer bought 1 ${item.name}! You earned ${price} Coins!${badgeMsg} Feedback: "${review}"`;
+                messageBox.textContent = `💰 Customer bought 1 ${item.name}! You earned ${price} 💰!${badgeMsg} Feedback: "${review}"`;
                 playSFX('correct');
             }
 
@@ -1224,6 +1258,21 @@ const vocabData = {
             saveProgress();
             renderShop();
         }
+
+        window.giveRiceTo = function(memberId) {
+            if (playerBadges > 0 && familyRice[memberId] < FAMILY_RICE_GOALS[memberId]) {
+                playerBadges--;
+                familyRice[memberId]++;
+                newlyEarnedRice = 1; // triggers a short jump of joy!
+                
+                playSFX('correct');
+                updateRiceDisplay();
+                saveProgress();
+                renderFamilyView();
+            } else {
+                playSFX('wrong');
+            }
+        };
 
         function renderFamilyView() {
             const familyContent = document.getElementById('family-content');
@@ -1250,25 +1299,33 @@ const vocabData = {
                  bagsHTML = `<p class="mt-8 pt-6 border-t border-gray-700 text-gray-400">Work hard to earn rice for the family! (0 Bags)</p>`;
             }
 
+            const createMember = (id, name, colorClass, svg, delay) => {
+                const current = familyRice[id];
+                const goal = FAMILY_RICE_GOALS[id];
+                const isFull = current >= goal;
+                const canGive = playerBadges > 0;
+                
+                let btn = isFull 
+                    ? `<span class="mt-2 px-3 py-1 bg-green-600 rounded-full text-xs text-white font-bold">Full! 🥰</span>`
+                    : `<button onclick="giveRiceTo('${id}')" class="mt-2 px-3 py-1 ${canGive ? 'bg-pink-600 hover:bg-pink-500 shadow-lg shadow-pink-800' : 'bg-gray-600 cursor-not-allowed'} rounded-full text-xs text-white font-bold transition-all transform active:scale-95" ${!canGive ? 'disabled' : ''}>Give 🍚</button>`;
+
+                return `
+                    <div class="text-center flex flex-col items-center ${jumpClasses} ${delay}">
+                        ${svg}
+                        <span class="mt-2 font-bold ${colorClass}">${name}</span>
+                        <span class="text-xs font-bold text-yellow-300 mt-1">${current}/${goal} 🍚</span>
+                        ${btn}
+                    </div>
+                `;
+            };
+
             familyContent.innerHTML = `
                 ${praiseMsg}
-                <div class="flex justify-center space-x-2 sm:space-x-8 mb-8 h-32 items-end overflow-visible">
-                    <div class="text-center flex flex-col items-center ${jumpClasses} delay-2">
-                        ${svgDad}
-                        <span class="mt-2 font-bold text-blue-300">Dad</span>
-                    </div>
-                    <div class="text-center flex flex-col items-center ${jumpClasses}">
-                        ${svgMom}
-                        <span class="mt-2 font-bold text-red-300">Mom</span>
-                    </div>
-                    <div class="text-center flex flex-col items-center ${jumpClasses} delay-1">
-                        ${svgBro1}
-                        <span class="mt-2 font-bold text-green-300">Older Bro</span>
-                    </div>
-                    <div class="text-center flex flex-col items-center ${jumpClasses} delay-3">
-                        ${svgBro2}
-                        <span class="mt-2 font-bold text-yellow-300">Little Bro</span>
-                    </div>
+                <div class="flex justify-center space-x-2 sm:space-x-8 mb-8 h-40 items-end overflow-visible">
+                    ${createMember('dad', 'Dad', 'text-blue-300', svgDad, 'delay-2')}
+                    ${createMember('mom', 'Mom', 'text-red-300', svgMom, '')}
+                    ${createMember('bro1', 'Older Bro', 'text-green-300', svgBro1, 'delay-1')}
+                    ${createMember('bro2', 'Little Bro', 'text-yellow-300', svgBro2, 'delay-3')}
                 </div>
                 ${bagsHTML}
             `;
@@ -1296,15 +1353,16 @@ const vocabData = {
             let html = `
                 <h2 class="text-3xl font-extrabold text-center text-yellow-300 mb-4">My Shop Status</h2>
                 <div class="bg-gray-700 p-4 rounded-lg mb-6">
-                    <div class="flex justify-around text-lg font-bold">
-                        <span>Level: <span class="text-blue-400">L${playerLevel}</span> (Next Lvl: ${playerLevel <= levelThresholds.length ? levelThresholds[playerLevel - 1] || 'MAX' : 'MAX'} Coins)</span>
+                    <div class="flex flex-col sm:flex-row justify-around text-lg font-bold gap-2">
+                        <span>Lvl: <span class="text-blue-400">${playerLevel}</span> (Next: ${playerLevel <= levelThresholds.length ? levelThresholds[playerLevel - 1] || 'MAX' : 'MAX'} 💰)</span>
                         <span>Coins: <span class="text-yellow-400">${currentScore} 💰</span></span>
+                        <span>Diamonds: <span class="text-cyan-400">${currentDiamonds} 💎</span></span>
                     </div>
                     ${progressHTML}
                 </div>
                 
-                <!-- Facility Upgrades -->
-                <h3 class="text-2xl font-bold text-green-400 mb-3">Facility Upgrades (Permanent Boosts)</h3>
+                <!-- Facility Upgrades (Costs Coins) -->
+                <h3 class="text-2xl font-bold text-green-400 mb-3">Facility Upgrades (Cost: 💰 Coins)</h3>
                 <div id="facility-list" class="grid grid-cols-2 gap-4 mb-8">
             `;
             
@@ -1414,14 +1472,14 @@ const vocabData = {
 
             html += (productInventoryHtml || '<p class="text-center text-gray-400 p-4">You have no crafted products ready for sale. Go craft some!</p>') + `</div>`;
 
-            // Ingredient Stock Area
-            html += `<h3 class="text-2xl font-bold text-blue-400 mb-3">Ingredient Stock (Purchase Raw Materials)</h3>
+            // Ingredient Stock Area (Costs Diamonds)
+            html += `<h3 class="text-2xl font-bold text-cyan-400 mb-3">Ingredient Stock (Cost: 💎 Diamonds)</h3>
                 <div id="buy-list" class="grid grid-cols-2 gap-4">
             `;
 
             const ingredientBuyHtml = ingredients.map(item => {
                 const cost = getItemCost(item);
-                const canBuy = currentScore >= cost;
+                const canBuy = currentDiamonds >= cost;
                 
                 return `
                     <div class="shop-item-card p-3 rounded-lg border-2 flex items-center justify-between unlocked-item">
@@ -1429,10 +1487,10 @@ const vocabData = {
                         <div class="flex-grow">
                             <p class="font-bold text-xl">${item.name}</p>
                             <p class="text-sm text-gray-400">Current Stock: <span class="text-yellow-300">${(playerInventory[item.id] && playerInventory[item.id].quantity) || 0}</span></p>
-                            <p class="text-xs text-gray-400">Cost: <span class="${canBuy ? 'text-yellow-300' : 'text-red-500'}">${cost} 💰</span></p>
+                            <p class="text-xs text-gray-400">Cost: <span class="${canBuy ? 'text-cyan-300' : 'text-red-500'}">${cost} 💎</span></p>
                         </div>
                         <button onclick="buyItem('${item.id}')" class="stage-button rounded-lg text-sm px-3 py-1 
-                            ${!canBuy ? 'opacity-70 cursor-not-allowed bg-gray-500 border-gray-700' : 'bg-green-500 border-green-700 shadow-green-700 hover:bg-green-400'}" 
+                            ${!canBuy ? 'opacity-70 cursor-not-allowed bg-gray-500 border-gray-700' : 'bg-cyan-600 border-cyan-800 shadow-cyan-800 text-white hover:bg-cyan-500'}" 
                             ${canBuy ? '' : 'disabled'}>
                             Buy (+1)
                         </button>
@@ -1564,8 +1622,8 @@ const vocabData = {
                 
                 if (card1.dataset.matchId === card2.dataset.matchId) {
                     playSFX('correct');
-                    updateScore(5); 
-                    messageBox.textContent = `⚡️ Match Success: ${card1.dataset.matchId.toLowerCase()}! Coins +5!`;
+                    updateDiamonds(5); 
+                    messageBox.textContent = `⚡️ Match Success: ${card1.dataset.matchId.toLowerCase()}! Diamonds +5 💎!`;
                     
                     setTimeout(() => {
                         card1.classList.add('matched');
@@ -1576,8 +1634,8 @@ const vocabData = {
                     }, 500);
                 } else {
                     playSFX('wrong');
-                    updateScore(-10); // PENALTY APPLIED
-                    messageBox.textContent = '❌ Match Failed! Coins -10!';
+                    updateDiamonds(-10); // PENALTY APPLIED
+                    messageBox.textContent = '❌ Match Failed! Diamonds -10 💎!';
                     setTimeout(() => {
                         card1.classList.remove('selected');
                         selectedConnectCard = null;
@@ -1681,8 +1739,8 @@ const vocabData = {
                 
                 if (card1.dataset.matchId === card2.dataset.matchId) {
                     playSFX('correct');
-                    updateScore(10); 
-                    messageBox.textContent = `⭐️ Perfect Match! ${card1.dataset.matchId.toLowerCase()}! Coins +10!`;
+                    updateDiamonds(10); 
+                    messageBox.textContent = `⭐️ Perfect Match! ${card1.dataset.matchId.toLowerCase()}! Diamonds +10 💎!`;
                     setTimeout(() => {
                         card1.classList.add('matched');
                         card2.classList.add('matched');
@@ -1692,8 +1750,8 @@ const vocabData = {
                     }, 500);
                 } else {
                     playSFX('wrong');
-                    updateScore(-10); // PENALTY APPLIED
-                    messageBox.textContent = '❌ Match Failed! Coins -10!';
+                    updateDiamonds(-10); // PENALTY APPLIED
+                    messageBox.textContent = '❌ Match Failed! Diamonds -10 💎!';
                     setTimeout(() => {
                         card1.classList.remove('selected');
                         card2.classList.remove('selected');
@@ -1842,8 +1900,8 @@ const vocabData = {
 
             if (userWord === correctWord) {
                 playSFX('correct');
-                updateScore(10); 
-                messageBox.textContent = `🎉 Correct! Word: ${correctWord.toLowerCase()}! Coins +10!`;
+                updateDiamonds(10); 
+                messageBox.textContent = `🎉 Correct! Word: ${correctWord.toLowerCase()}! Diamonds +10 💎!`;
                 
                 document.querySelectorAll('#answer-area .letter-slot').forEach(slot => {
                     slot.classList.add('bg-green-600', 'text-white', 'border-green-800');
@@ -1857,8 +1915,8 @@ const vocabData = {
                 }, 2000);
             } else {
                 playSFX('wrong');
-                updateScore(-10); // PENALTY APPLIED
-                messageBox.textContent = `❌ Incorrect Spelling! Coins -10!`;
+                updateDiamonds(-10); // PENALTY APPLIED
+                messageBox.textContent = `❌ Incorrect Spelling! Diamonds -10 💎!`;
                 
                 document.getElementById('answer-area').querySelectorAll('.letter-slot').forEach(slot => {
                     if(slot.textContent) slot.classList.add('error');
