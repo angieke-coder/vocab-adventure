@@ -702,13 +702,13 @@ const vocabData = {
         let productsSold = 0;
         let playerBadges = 0; // Start with 0
         let newlyEarnedRice = 0; // Trigger for happy animation
-        let bonusRiceClaimed = false; // Track if bonus is claimed
 
         // Family Rice Distribution
-        let familyRice = { dad: 0, mom: 0, bro1: 0, bro2: 0 };
-        const FAMILY_RICE_GOALS = { dad: 5, mom: 5, bro1: 3, bro2: 3 };
+        let familyRice = { family: 0, luffy: 0, zoro: 0, chopper: 0, sanji: 0, nami: 0 };
+        const FAMILY_RICE_GOALS = { family: 30, luffy: 50, zoro: 40, chopper: 30, sanji: 25, nami: 10 };
+        let charityDonations = 0; // Infinite goal
 
-        const levelThresholds = [4000, 9000, 18000, 30000, 60000]; 
+        const levelThresholds = [4000, 9000, 18000, 30000, 60000, 150000, 300000, 600000, 1500000, 5000000]; 
 
         // Progress and State
         let completedStages = {}; 
@@ -871,8 +871,19 @@ const vocabData = {
                 shopFacilities = data.shopFacilities || {}; 
                 productsSold = data.productsSold || 0;
                 playerBadges = data.playerBadges !== undefined ? data.playerBadges : 0;
-                familyRice = data.familyRice || { dad: 0, mom: 0, bro1: 0, bro2: 0 };
-                bonusRiceClaimed = data.bonusRiceClaimed || false;
+                familyRice = data.familyRice || { family: 0, luffy: 0, zoro: 0, chopper: 0, sanji: 0, nami: 0 };
+                charityDonations = data.charityDonations || 0;
+
+                // Ensure new ones exist & migrate old family data
+                if(familyRice.family === undefined) {
+                    familyRice.family = (familyRice.dad || 0) + (familyRice.mom || 0) + (familyRice.bro1 || 0) + (familyRice.bro2 || 0);
+                    delete familyRice.dad; delete familyRice.mom; delete familyRice.bro1; delete familyRice.bro2;
+                }
+                if(familyRice.luffy === undefined) familyRice.luffy = 0;
+                if(familyRice.zoro === undefined) familyRice.zoro = 0;
+                if(familyRice.chopper === undefined) familyRice.chopper = 0;
+                if(familyRice.sanji === undefined) familyRice.sanji = 0;
+                if(familyRice.nami === undefined) familyRice.nami = 0;
 
                 // Migrate old array logic to new play count object logic
                 for (let w in completedStages) {
@@ -906,7 +917,7 @@ const vocabData = {
                 productsSold: productsSold,
                 playerBadges: playerBadges,
                 familyRice: familyRice,
-                bonusRiceClaimed: bonusRiceClaimed
+                charityDonations: charityDonations
             };
             localStorage.setItem('vocabAdventureProgress', JSON.stringify(dataToSave));
             updateUI();
@@ -928,8 +939,8 @@ const vocabData = {
             productsSold = 0;
             playerBadges = 0; 
             newlyEarnedRice = 0;
-            familyRice = { dad: 0, mom: 0, bro1: 0, bro2: 0 };
-            bonusRiceClaimed = false;
+            familyRice = { family: 0, luffy: 0, zoro: 0, chopper: 0, sanji: 0, nami: 0 };
+            charityDonations = 0;
             
             facilityUpgrades.forEach(f => { shopFacilities[f.id] = 0; });
 
@@ -1043,12 +1054,26 @@ const vocabData = {
             }
         }
 
+        // --- NEW: Calculate Extra Diamond Rewards based on fed Crew ---
+        function getDiamondReward(points) {
+            if (points <= 0) return points; // Do not boost penalties
+            let bonus = 0;
+            if (familyRice.chopper >= FAMILY_RICE_GOALS.chopper) bonus += 3;
+            if (familyRice.zoro >= FAMILY_RICE_GOALS.zoro) bonus += 5;
+            return points + bonus;
+        }
+
         function getFacilityPriceMultiplier() {
             const registerLevel = shopFacilities['reg_boost'] || 0;
             let totalMultiplier = 1.0;
             for (let i = 0; i < registerLevel; i++) {
                 totalMultiplier += facilityUpgrades.find(f => f.id === 'reg_boost').levels[i].price_multiplier;
             }
+            
+            // Crew Buffs!
+            if (familyRice.sanji >= FAMILY_RICE_GOALS.sanji) totalMultiplier += 0.03;
+            if (familyRice.luffy >= FAMILY_RICE_GOALS.luffy) totalMultiplier += 0.20;
+
             return totalMultiplier;
         }
 
@@ -1058,6 +1083,10 @@ const vocabData = {
             for (let i = 0; i < supplierLevel; i++) {
                 totalReduction += facilityUpgrades.find(f => f.id === 'bulk_discount').levels[i].cost_reduction;
             }
+            
+            // Nami's Buff
+            if (familyRice.nami >= FAMILY_RICE_GOALS.nami) totalReduction += 0.05;
+
             return 1.0 - totalReduction;
         }
     
@@ -1074,7 +1103,10 @@ const vocabData = {
         }
         
         function getCustomerInterval() {
-            return BASE_CUSTOMER_INTERVAL;
+            let buffReduction = 0;
+            if (familyRice.luffy >= FAMILY_RICE_GOALS.luffy) buffReduction += 3000;
+            
+            return Math.max(5000, BASE_CUSTOMER_INTERVAL - buffReduction);
         }
 
         window.buyFacility = function(facilityId) {
@@ -1264,6 +1296,19 @@ const vocabData = {
         }
 
         window.giveRiceTo = function(memberId) {
+            if (memberId === 'charity') {
+                if (playerBadges > 0) {
+                    playerBadges--;
+                    charityDonations++;
+                    newlyEarnedRice = 1;
+                    playSFX('correct');
+                    updateRiceDisplay();
+                    saveProgress();
+                    renderFamilyView();
+                }
+                return;
+            }
+
             if (playerBadges > 0 && familyRice[memberId] < FAMILY_RICE_GOALS[memberId]) {
                 playerBadges--;
                 familyRice[memberId]++;
@@ -1278,32 +1323,31 @@ const vocabData = {
             }
         };
 
-        window.claimBonusRice = function() {
-            if (!bonusRiceClaimed) {
-                bonusRiceClaimed = true;
-                playerBadges += 2;
-                newlyEarnedRice = 1; 
-                playSFX('correct');
-                updateRiceDisplay();
-                saveProgress();
-                renderFamilyView();
-                messageBox.innerHTML = `🎉 <b>WOW! You claimed 2 Bonus Bags of Rice 🍚! Give them to your family!</b>`;
-            }
-        };
-
         function renderFamilyView() {
             const familyContent = document.getElementById('family-content');
             familyContent.classList.add('relative'); // Ensure relative positioning for the absolute button
             
-            const svgDad = `<svg width="80" height="100" viewBox="0 0 100 100"><rect x="25" y="50" width="50" height="50" rx="15" fill="#3b82f6" /><rect x="45" y="50" width="10" height="40" fill="#1e3a8a" /><circle cx="50" cy="35" r="25" fill="#fde68a" /><circle cx="40" cy="30" r="4" fill="#1f2937" /><circle cx="60" cy="30" r="4" fill="#1f2937" /><path d="M 40 45 Q 50 55 60 45" stroke="#1f2937" stroke-width="4" fill="transparent" /><circle cx="40" cy="30" r="10" stroke="#1f2937" stroke-width="2" fill="transparent"/><circle cx="60" cy="30" r="10" stroke="#1f2937" stroke-width="2" fill="transparent"/><line x1="50" y1="30" x2="50" y2="30" stroke="#1f2937" stroke-width="2"/></svg>`;
-            const svgMom = `<svg width="70" height="90" viewBox="0 0 100 100"><path d="M 15 100 L 50 40 L 85 100 Z" fill="#ef4444" /><circle cx="50" cy="35" r="30" fill="#451a03" /><circle cx="50" cy="35" r="22" fill="#fde68a" /><circle cx="42" cy="30" r="3" fill="#1f2937" /><circle cx="58" cy="30" r="3" fill="#1f2937" /><path d="M 42 42 Q 50 50 58 42" stroke="#1f2937" stroke-width="3" fill="transparent" /></svg>`;
-            const svgBro1 = `<svg width="60" height="75" viewBox="0 0 100 100"><rect x="25" y="45" width="50" height="55" rx="12" fill="#10b981" /><circle cx="50" cy="30" r="20" fill="#fde68a" /><circle cx="43" cy="25" r="3" fill="#1f2937" /><circle cx="57" cy="25" r="3" fill="#1f2937" /><path d="M 43 35 Q 50 42 57 35" stroke="#1f2937" stroke-width="3" fill="transparent" /><path d="M 30 18 Q 50 0 70 18 Z" fill="#b91c1c" /><rect x="50" y="13" width="30" height="6" rx="3" fill="#b91c1c" /></svg>`;
-            const svgBro2 = `<svg width="50" height="60" viewBox="0 0 100 100"><rect x="30" y="40" width="40" height="60" rx="10" fill="#f59e0b" /><circle cx="50" cy="25" r="18" fill="#fde68a" /><circle cx="44" cy="20" r="2.5" fill="#1f2937" /><circle cx="56" cy="20" r="2.5" fill="#1f2937" /><path d="M 44 30 Q 50 36 56 30" stroke="#1f2937" stroke-width="2.5" fill="transparent" /><path d="M 32 25 Q 50 -5 68 25 Z" fill="#92400e" /></svg>`;
+            // 獨立的家人 SVG
+            const svgDad = `<svg width="90" height="110" viewBox="0 0 100 100" class="drop-shadow-md"><rect x="25" y="50" width="50" height="50" rx="15" fill="#3b82f6" /><rect x="45" y="50" width="10" height="40" fill="#1e3a8a" /><circle cx="50" cy="35" r="25" fill="#fde68a" /><circle cx="40" cy="30" r="4" fill="#1f2937" /><circle cx="60" cy="30" r="4" fill="#1f2937" /><path d="M 40 45 Q 50 55 60 45" stroke="#1f2937" stroke-width="4" fill="transparent" /><circle cx="40" cy="30" r="10" stroke="#1f2937" stroke-width="2" fill="transparent"/><circle cx="60" cy="30" r="10" stroke="#1f2937" stroke-width="2" fill="transparent"/><line x1="50" y1="30" x2="50" y2="30" stroke="#1f2937" stroke-width="2"/></svg>`;
+            const svgMom = `<svg width="80" height="100" viewBox="0 0 100 100" class="drop-shadow-md"><path d="M 15 100 L 50 40 L 85 100 Z" fill="#ef4444" /><circle cx="50" cy="35" r="30" fill="#451a03" /><circle cx="50" cy="35" r="22" fill="#fde68a" /><circle cx="42" cy="30" r="3" fill="#1f2937" /><circle cx="58" cy="30" r="3" fill="#1f2937" /><path d="M 42 42 Q 50 50 58 42" stroke="#1f2937" stroke-width="3" fill="transparent" /></svg>`;
+            const svgBro1 = `<svg width="70" height="85" viewBox="0 0 100 100" class="drop-shadow-md"><rect x="25" y="45" width="50" height="55" rx="12" fill="#10b981" /><circle cx="50" cy="30" r="20" fill="#fde68a" /><circle cx="43" cy="25" r="3" fill="#1f2937" /><circle cx="57" cy="25" r="3" fill="#1f2937" /><path d="M 43 35 Q 50 42 57 35" stroke="#1f2937" stroke-width="3" fill="transparent" /><path d="M 30 18 Q 50 0 70 18 Z" fill="#b91c1c" /><rect x="50" y="13" width="30" height="6" rx="3" fill="#b91c1c" /></svg>`;
+            const svgBro2 = `<svg width="60" height="70" viewBox="0 0 100 100" class="drop-shadow-md"><rect x="30" y="40" width="40" height="60" rx="10" fill="#f59e0b" /><circle cx="50" cy="25" r="18" fill="#fde68a" /><circle cx="44" cy="20" r="2.5" fill="#1f2937" /><circle cx="56" cy="20" r="2.5" fill="#1f2937" /><path d="M 44 30 Q 50 36 56 30" stroke="#1f2937" stroke-width="2.5" fill="transparent" /><path d="M 32 25 Q 50 -5 68 25 Z" fill="#92400e" /></svg>`;
             
+            const svgCharity = `<svg width="70" height="70" viewBox="0 0 100 100"><rect x="15" y="30" width="70" height="60" fill="#8b5cf6" rx="5" /><rect x="10" y="20" width="80" height="15" fill="#7c3aed" rx="3" /><path d="M 50 45 L 60 55 L 50 75 L 40 55 Z" fill="#f43f5e" /><text x="50" y="62" font-size="12" fill="white" font-weight="bold" text-anchor="middle">DONATE</text></svg>`;
+            
+            // Helper function to render One Piece images safely with fallback
+            const getImg = (url, fallback) => `<div class="h-[110px] flex items-center justify-center"><img src="${url}" class="max-h-full max-w-full object-contain drop-shadow-md" onerror="this.outerHTML='<span class=\\'text-6xl\\'>${fallback}</span>'" /></div>`;
+            
+            const imgLuffy = getImg('https://www.skechers-twn.com/2021onepiece/kids_images/products_CharacterKids_luffy.png', '🍖');
+            const imgZoro = getImg('https://www.ttv.com.tw/drama/2005/cartoon/onepeace/images/cast/05.gif', '⚔️');
+            const imgChopper = getImg('https://www.pngall.com/wp-content/uploads/15/Tony-Tony-Chopper.png', '🦌');
+            const imgSanji = getImg('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/b7d7c997-3670-4348-96d2-c337e071487c/dc02i5n-c0b96256-88d2-4bc5-a56b-80a46d012b19.png/v1/fit/w_828,h_1076/sanji_chibi_by_lankysandwich_dc02i5n-414w-2x.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTMzMSIsInBhdGgiOiIvZi9iN2Q3Yzk5Ny0zNjcwLTQzNDgtOTZkMi1jMzM3ZTA3MTQ4N2MvZGMwMmk1bi1jMGI5NjI1Ni04OGQyLTRiYzUtYTU2Yi04MGE0NmQwMTJiMTkucG5nIiwid2lkdGgiOiI8PTEwMjQifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.U3_HgIsljNzSUXGWqT1_L0SIzjI_aKDNHdjBgO0EOuo', '🚬');
+            const imgNami = getImg('https://mystickermania.com/cdn/stickers/one-piece/one-piece-nami-loves-money-512x512.png', '🍊');
+
             let jumpClasses = newlyEarnedRice > 0 ? "family-jump" : "";
             let praiseMsg = newlyEarnedRice > 0 
                 ? `<h2 class="text-3xl font-extrabold text-yellow-300 mb-6 animate-pulse">🎉 YAY! Thank you for the rice! 🎉</h2>` 
-                : `<h2 class="text-3xl font-extrabold text-white mb-6">My Lovely Family</h2>`;
+                : `<h2 class="text-3xl font-extrabold text-white mb-6">My Lovely Family & Crew</h2>`;
 
             let bagsHTML = '';
             if (playerBadges > 0) {
@@ -1314,50 +1358,116 @@ const vocabData = {
                     </div>
                 </div>`;
             } else {
-                 bagsHTML = `<p class="mt-8 pt-6 border-t border-gray-700 text-gray-400">Work hard to earn rice for the family! (0 Bags)</p>`;
+                 bagsHTML = `<p class="mt-8 pt-6 border-t border-gray-700 text-gray-400">Work hard to earn rice! (0 Bags)</p>`;
             }
 
-            const createMember = (id, name, colorClass, svg, delay) => {
-                const current = familyRice[id];
-                const goal = FAMILY_RICE_GOALS[id];
+            const buffTexts = {
+                nami: '食材 -5%', sanji: '售價 +3%', chopper: '單字額外 +3💎', zoro: '單字額外 +5💎', luffy: '客人飛快/售價+20%'
+            };
+
+            // 針對海賊王角色的獨立小卡片產生器
+            const createMember = (id, dataId, name, colorClass, svg, delay) => {
+                const current = familyRice[dataId];
+                const goal = FAMILY_RICE_GOALS[dataId];
                 const isFull = current >= goal;
                 const canGive = playerBadges > 0;
                 
                 let btn = isFull 
-                    ? `<span class="mt-2 px-3 py-1 bg-green-600 rounded-full text-xs text-white font-bold">Full! 🥰</span>`
-                    : `<button onclick="giveRiceTo('${id}')" class="mt-2 px-3 py-1 ${canGive ? 'bg-pink-600 hover:bg-pink-500 shadow-lg shadow-pink-800' : 'bg-gray-600 cursor-not-allowed'} rounded-full text-xs text-white font-bold transition-all transform active:scale-95" ${!canGive ? 'disabled' : ''}>Give 🍚</button>`;
+                    ? `<span class="mt-auto px-2 py-1.5 bg-green-600 rounded-lg text-xs sm:text-sm text-white font-bold shadow-lg leading-tight w-full box-border">達成！🥰</span>`
+                    : `<button onclick="giveRiceTo('${dataId}')" class="mt-auto px-2 py-1.5 ${canGive ? 'bg-pink-600 hover:bg-pink-500 shadow-lg shadow-pink-800' : 'bg-gray-600 cursor-not-allowed'} rounded-full text-xs sm:text-sm text-white font-bold transition-all transform active:scale-95 w-full box-border" ${!canGive ? 'disabled' : ''}>Give 🍚</button>`;
+
+                let buffTextHtml = '';
+                if (buffTexts[id]) {
+                    buffTextHtml = `<span class="text-xs text-pink-300 font-black mt-2 leading-tight whitespace-nowrap">${buffTexts[id]}</span>`;
+                }
 
                 return `
-                    <div class="text-center flex flex-col items-center ${jumpClasses} ${delay}">
-                        ${svg}
-                        <span class="mt-2 font-bold ${colorClass}">${name}</span>
-                        <span class="text-xs font-bold text-yellow-300 mt-1">${current}/${goal} 🍚</span>
+                    <div class="text-center flex flex-col items-center justify-start ${jumpClasses} ${delay} bg-gray-800 p-3 sm:p-4 rounded-xl border-b-4 ${isFull ? 'border-green-500' : 'border-gray-900'} w-28 sm:w-36 min-h-[230px] shadow-lg">
+                        <div class="h-[110px] flex items-end justify-center w-full">${svg}</div>
+                        <span class="mt-3 font-bold text-base sm:text-lg ${colorClass}">${name}</span>
+                        ${buffTextHtml}
+                        <span class="text-xs sm:text-sm font-bold text-yellow-300 mt-1 mb-3">${current}/${goal} 🍚</span>
                         ${btn}
                     </div>
                 `;
             };
 
-            let bonusButtonHTML = '';
-            if (!bonusRiceClaimed) {
-                bonusButtonHTML = `
-                    <div class="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
-                        <button onclick="claimBonusRice()" class="px-3 py-2 bg-yellow-500 hover:bg-yellow-400 text-gray-900 rounded-lg font-black shadow-lg transform transition active:scale-95 border-2 border-yellow-700 text-xs sm:text-sm animate-bounce">
-                            🎁 Claim 2 Bonus Rice!
-                        </button>
+            // --- 專屬「My Family」橫向大包廂 ---
+            const familyCurrent = familyRice['family'];
+            const familyGoal = FAMILY_RICE_GOALS['family'];
+            const familyIsFull = familyCurrent >= familyGoal;
+            const canGiveFamily = playerBadges > 0;
+
+            const familyBtn = familyIsFull 
+                ? `<span class="mt-2 px-6 py-2 bg-green-600 rounded-xl text-sm sm:text-base text-white font-bold shadow-lg leading-tight w-full sm:w-auto">全家吃飽了！🥰</span>`
+                : `<button onclick="giveRiceTo('family')" class="mt-2 px-8 py-2 ${canGiveFamily ? 'bg-pink-600 hover:bg-pink-500 shadow-lg shadow-pink-800' : 'bg-gray-600 cursor-not-allowed'} rounded-xl text-sm sm:text-base text-white font-bold transition-all transform active:scale-95 w-full sm:w-auto" ${!canGiveFamily ? 'disabled' : ''}>給全家 🍚</button>`;
+
+            const familyBigCard = `
+                <div class="flex flex-col md:flex-row items-center justify-between bg-gray-800 p-4 sm:p-6 rounded-xl border-b-4 ${familyIsFull ? 'border-green-500' : 'border-gray-900'} w-full max-w-4xl mx-auto shadow-xl mb-8">
+                    
+                    <!-- 家人排排站 (左側) -->
+                    <div class="flex items-end justify-center space-x-1 sm:space-x-4 mb-6 md:mb-0 w-full md:w-auto overflow-visible">
+                        <div class="flex flex-col items-center ${jumpClasses} delay-2 drop-shadow-lg">
+                            ${svgDad}
+                            <span class="mt-2 font-bold text-blue-300 text-sm">Dad</span>
+                        </div>
+                        <div class="flex flex-col items-center ${jumpClasses} drop-shadow-lg">
+                            ${svgMom}
+                            <span class="mt-2 font-bold text-red-300 text-sm">Mom</span>
+                        </div>
+                        <div class="flex flex-col items-center ${jumpClasses} delay-1 drop-shadow-lg">
+                            ${svgBro1}
+                            <span class="mt-2 font-bold text-green-300 text-sm">Older Bro</span>
+                        </div>
+                        <div class="flex flex-col items-center ${jumpClasses} delay-3 drop-shadow-lg">
+                            ${svgBro2}
+                            <span class="mt-2 font-bold text-yellow-300 text-sm">Little Bro</span>
+                        </div>
                     </div>
-                `;
-            }
+                    
+                    <!-- 給飯控制區 (右側) -->
+                    <div class="flex flex-col items-center md:items-end justify-center w-full md:w-auto pl-0 md:pl-8 border-t md:border-t-0 md:border-l border-gray-700 pt-6 md:pt-0">
+                        <span class="font-black text-2xl sm:text-3xl text-white tracking-wide">My Family</span>
+                        <span class="text-sm text-gray-400 font-bold mt-1">共用 ${familyGoal} 🍚</span>
+                        <span class="text-xl sm:text-2xl font-black text-yellow-300 mt-3 mb-3">${familyCurrent} / ${familyGoal} 🍚</span>
+                        ${familyBtn}
+                    </div>
+
+                </div>
+            `;
+
+            const hearts = Array(Math.floor(charityDonations / 5)).fill('💖').join('');
 
             familyContent.innerHTML = `
-                ${bonusButtonHTML}
                 ${praiseMsg}
-                <div class="flex justify-center space-x-2 sm:space-x-8 mb-8 h-40 items-end overflow-visible">
-                    ${createMember('dad', 'Dad', 'text-blue-300', svgDad, 'delay-2')}
-                    ${createMember('mom', 'Mom', 'text-red-300', svgMom, '')}
-                    ${createMember('bro1', 'Older Bro', 'text-green-300', svgBro1, 'delay-1')}
-                    ${createMember('bro2', 'Little Bro', 'text-yellow-300', svgBro2, 'delay-3')}
+                
+                <!-- Family Big Card -->
+                ${familyBigCard}
+
+                <div class="flex flex-wrap justify-center gap-3 sm:gap-6 mb-6 pt-4 items-stretch overflow-visible">
+                    <!-- One Piece Crew! -->
+                    ${createMember('luffy', 'luffy', 'Luffy', 'text-red-500', imgLuffy, 'delay-1')}
+                    ${createMember('zoro', 'zoro', 'Zoro', 'text-green-500', imgZoro, 'delay-3')}
+                    ${createMember('chopper', 'chopper', 'Chopper', 'text-pink-400', imgChopper, 'delay-2')}
+                    ${createMember('sanji', 'sanji', 'Sanji', 'text-yellow-400', imgSanji, 'delay-1')}
+                    ${createMember('nami', 'nami', 'Nami', 'text-orange-400', imgNami, '')}
                 </div>
                 ${bagsHTML}
+                
+                <!-- Infinite Charity Sink -->
+                <div class="mt-8 p-4 bg-purple-900 bg-opacity-30 rounded-xl border-2 border-purple-700 flex flex-col sm:flex-row items-center justify-between">
+                    <div class="flex items-center text-left mb-4 sm:mb-0">
+                        <div class="${jumpClasses}">${svgCharity}</div>
+                        <div class="ml-4">
+                            <h3 class="text-xl font-bold text-purple-300">Orphanage Charity</h3>
+                            <p class="text-sm text-gray-300">Donated: ${charityDonations} 🍚 <br/>(Every 5 bags = 1 💖)</p>
+                            <p class="text-lg mt-1">${hearts}</p>
+                        </div>
+                    </div>
+                    <button onclick="giveRiceTo('charity')" class="px-6 py-3 ${playerBadges > 0 ? 'bg-purple-600 hover:bg-purple-500 shadow-purple-800' : 'bg-gray-600 cursor-not-allowed'} rounded-xl text-white font-bold text-lg transition-all transform active:scale-95 shadow-lg" ${playerBadges <= 0 ? 'disabled' : ''}>
+                        Donate 🍚
+                    </button>
+                </div>
             `;
 
             if (newlyEarnedRice > 0) {
@@ -1652,8 +1762,9 @@ const vocabData = {
                 
                 if (card1.dataset.matchId === card2.dataset.matchId) {
                     playSFX('correct');
-                    updateDiamonds(5); 
-                    messageBox.textContent = `⚡️ Match Success: ${card1.dataset.matchId.toLowerCase()}! Diamonds +5 💎!`;
+                    const reward = getDiamondReward(2); // Reduced from 5
+                    updateDiamonds(reward); 
+                    messageBox.textContent = `⚡️ Match Success: ${card1.dataset.matchId.toLowerCase()}! Diamonds +${reward} 💎!`;
                     
                     setTimeout(() => {
                         card1.classList.add('matched');
@@ -1769,8 +1880,9 @@ const vocabData = {
                 
                 if (card1.dataset.matchId === card2.dataset.matchId) {
                     playSFX('correct');
-                    updateDiamonds(10); 
-                    messageBox.textContent = `⭐️ Perfect Match! ${card1.dataset.matchId.toLowerCase()}! Diamonds +10 💎!`;
+                    const reward = getDiamondReward(4); // Reduced from 10
+                    updateDiamonds(reward); 
+                    messageBox.textContent = `⭐️ Perfect Match! ${card1.dataset.matchId.toLowerCase()}! Diamonds +${reward} 💎!`;
                     setTimeout(() => {
                         card1.classList.add('matched');
                         card2.classList.add('matched');
@@ -1930,8 +2042,9 @@ const vocabData = {
 
             if (userWord === correctWord) {
                 playSFX('correct');
-                updateDiamonds(10); 
-                messageBox.textContent = `🎉 Correct! Word: ${correctWord.toLowerCase()}! Diamonds +10 💎!`;
+                const reward = getDiamondReward(10);
+                updateDiamonds(reward); 
+                messageBox.textContent = `🎉 Correct! Word: ${correctWord.toLowerCase()}! Diamonds +${reward} 💎!`;
                 
                 document.querySelectorAll('#answer-area .letter-slot').forEach(slot => {
                     slot.classList.add('bg-green-600', 'text-white', 'border-green-800');
