@@ -443,7 +443,7 @@ const vocabData = {
         { word: 'daisies', concept: '黃心白花瓣的花', icon: '🌼', keyword: 'white flower yellow center', chinese: '雛菊' },
         { word: 'memories', concept: '記住事情的能力', icon: '💭', keyword: 'ability to remember information', chinese: '記憶' },
         { word: 'plays', concept: '參與體育或遊戲', icon: '🎭', keyword: 'taking part in a sport or game', chinese: '比賽' },
-        { word: 'company(ies)', concept: '販售商品賺錢的組織', icon: '🏢', keyword: 'organization that sells goods', chinese: '公司' },
+        { word: 'company', concept: '販售商品賺錢的組織', icon: '🏢', keyword: 'organization that sells goods', chinese: '公司' },
         { word: 'delays', concept: '發生的時間比預期晚', icon: '⏳', keyword: 'happens later than it should', chinese: '延遲' },
         { word: 'bunches', concept: '綁在一起的一群物品', icon: '💐', keyword: 'group of things tied together', chinese: '束成一束' },
         { word: 'supplies', concept: '可供使用的物品', icon: '📦', keyword: 'amount available to be used', chinese: '供應品' },
@@ -518,7 +518,7 @@ const vocabData = {
         { word: 'recite', concept: '向觀眾憑記憶背誦', icon: '🗣️', keyword: 'read out loud from memory', chinese: '背誦' },
         { word: 'thermometer', concept: '測量溫度的儀器', icon: '🌡️', keyword: 'instrument for measuring temperature', chinese: '溫度計' },
         { word: 'temperature', concept: '表示冷熱程度的測量值', icon: '🥶', keyword: 'measurement indicates how hot or cold', chinese: '溫度' },
-        { word: '(rain) gauge', concept: '用來測量事物的儀器', icon: '🌧️', keyword: 'instrument used to measure', chinese: '雨量表' },
+        { word: 'rain gauge', concept: '用來測量事物的儀器', icon: '🌧️', keyword: 'instrument used to measure', chinese: '雨量表' },
         { word: 'barometer', concept: '測量氣壓的儀器', icon: '🧭', keyword: 'instrument to measure air pressure', chinese: '氣壓計' },
         { word: 'scientific', concept: '與科學有關的', icon: '🔬', keyword: 'relating to science', chinese: '科學的' },
         { word: 'chemist', concept: '研究化學科學的人', icon: '🧑‍🔬', keyword: 'person who studies chemistry', chinese: '化學家' },
@@ -1962,14 +1962,22 @@ const vocabData = {
             const wordData = stage3Words[currentWordIndex];
             const word = wordData.word.toLowerCase();
             
+            // 全新升級：只挑出英文字母來打亂！
+            const lettersOnly = word.replace(/[^a-z]/g, '').split('');
+            
             currentPuzzle = {
                 word: word,
                 targetLetters: word.split(''),
-                jumbledLetters: shuffle(word.split('')),
+                jumbledLetters: shuffle(lettersOnly),
                 icon: wordData.icon,
                 keyword: wordData.keyword
             };
-            currentGuess = Array(word.length).fill(null);
+            
+            // 自動預填所有的空格與符號
+            currentGuess = word.split('').map(char => {
+                if (/[a-z]/.test(char)) return null;
+                return { letter: char, originalIndex: -1, isPunctuation: true };
+            });
 
             gameBoard.className = 'flex flex-col items-center gap-6 p-4 bg-gray-900 rounded-lg';
             gameBoard.innerHTML = '';
@@ -1991,12 +1999,19 @@ const vocabData = {
 
             const answerArea = document.createElement('div');
             answerArea.id = 'answer-area';
-            answerArea.className = 'flex justify-center mb-6';
-            currentPuzzle.targetLetters.forEach((_, index) => {
+            answerArea.className = 'flex justify-center mb-6 flex-wrap'; // 支援過長單字自動換行
+            currentPuzzle.targetLetters.forEach((char, index) => {
                 const slot = document.createElement('div');
-                slot.className = 'letter-slot card-container m-1';
-                slot.dataset.index = index;
-                slot.addEventListener('click', () => handleSlotClick(index)); 
+                if (/[a-z]/.test(char)) {
+                    slot.className = 'letter-slot card-container m-1';
+                    slot.dataset.index = index;
+                    slot.addEventListener('click', () => handleSlotClick(index)); 
+                } else {
+                    // 若是符號或空格，直接渲染成不可點擊的文字
+                    slot.className = 'm-1 flex items-center justify-center text-yellow-300 text-3xl font-black w-6';
+                    slot.textContent = char === ' ' ? '\u00A0' : char; // 把空格變成實體空白以維持寬度
+                    slot.dataset.isPunctuation = 'true';
+                }
                 answerArea.appendChild(slot);
             });
             gameBoard.appendChild(answerArea);
@@ -2039,7 +2054,7 @@ const vocabData = {
         function handleSlotClick(slotIndex) {
             if (isProcessing) return;
             const guess = currentGuess[slotIndex];
-            if (!guess) return; 
+            if (!guess || guess.isPunctuation) return; // 鎖定預填符號不被點擊移除
 
             playSFX('click');
             
@@ -2051,7 +2066,7 @@ const vocabData = {
             originalBlock.dataset.inUse = 'false';
             originalBlock.classList.add('jumbled', 'cursor-pointer');
             originalBlock.classList.remove('correct');
-            originalBlock.addEventListener('click', () => handleLetterClick(originalBlock, guess.letter, guess.originalIndex));
+            // 已修復舊版會重複綁定事件的 Bug！
         }
 
         function checkSpelling() {
@@ -2097,15 +2112,17 @@ const vocabData = {
                     
                     document.getElementById('letter-area').querySelectorAll('.letter-block').forEach(block => {
                         if (block.dataset.inUse === 'true') {
-                            const letter = block.textContent;
-                            const originalIndex = block.dataset.originalIndex;
                             block.dataset.inUse = 'false';
                             block.classList.add('jumbled', 'cursor-pointer');
                             block.classList.remove('correct');
-                            block.addEventListener('click', () => handleLetterClick(block, letter, originalIndex));
                         }
                     });
-                    currentGuess = Array(currentPuzzle.word.length).fill(null);
+                    
+                    // 重新將符號和空格重置為佔位符
+                    currentGuess = currentPuzzle.word.split('').map(char => {
+                        if (/[a-z]/.test(char)) return null;
+                        return { letter: char, originalIndex: -1, isPunctuation: true };
+                    });
                     isProcessing = false;
                 }, 1500);
             }
