@@ -593,27 +593,27 @@ const vocabData = {
 
         // 成品列表 (Final Products) - Sell for Coins 💰 (Restored to profitable prices)
         const products = [
-            // L1 基礎商品
-            { id: 'fries', name: 'Fries', icon: '🍟', basePrice: 50, requiredLevel: 1, type: 'product', recipe: { potato: 1, oil: 1, salt: 1 } },
-            { id: 'cola', name: 'Cola', icon: '🥤', basePrice: 60, requiredLevel: 1, type: 'product', recipe: { soda: 1, ice: 2 } },
-            { id: 'burger', name: 'Burger', icon: '🍔', basePrice: 130, requiredLevel: 1, type: 'product', recipe: { bun: 2, beef: 1, lettuce: 1 } },
-            { id: 'milkshake', name: 'Milkshake', icon: '🥛', basePrice: 80, requiredLevel: 1, type: 'product', recipe: { milk: 1, icecream_base: 1 } },
+            // L1 基礎商品 - Recipe ingredients increased to drain diamonds!
+            { id: 'fries', name: 'Fries', icon: '🍟', basePrice: 50, requiredLevel: 1, type: 'product', recipe: { potato: 2, oil: 2, salt: 1 } },
+            { id: 'cola', name: 'Cola', icon: '🥤', basePrice: 60, requiredLevel: 1, type: 'product', recipe: { soda: 2, ice: 3 } },
+            { id: 'burger', name: 'Burger', icon: '🍔', basePrice: 130, requiredLevel: 1, type: 'product', recipe: { bun: 2, beef: 2, lettuce: 2 } },
+            { id: 'milkshake', name: 'Milkshake', icon: '🥛', basePrice: 80, requiredLevel: 1, type: 'product', recipe: { milk: 2, icecream_base: 2 } },
             
             // L2 解鎖商品 
-            { id: 'nuggets', name: 'Nuggets', icon: '🍗', basePrice: 140, requiredLevel: 2, type: 'product', recipe: { chicken: 2, oil: 1, salt: 1 } },
-            { id: 'hotdog', name: 'Hot Dog', icon: '🌭', basePrice: 110, requiredLevel: 2, type: 'product', recipe: { hotdog_bun: 1, sausage: 1, sauce: 1 } },
+            { id: 'nuggets', name: 'Nuggets', icon: '🍗', basePrice: 140, requiredLevel: 2, type: 'product', recipe: { chicken: 3, oil: 2, salt: 1 } },
+            { id: 'hotdog', name: 'Hot Dog', icon: '🌭', basePrice: 110, requiredLevel: 2, type: 'product', recipe: { hotdog_bun: 2, sausage: 2, sauce: 2 } },
             
             // L3 解鎖商品 
-            { id: 'pizza', name: 'Pizza', icon: '🍕', basePrice: 250, requiredLevel: 3, type: 'product', recipe: { dough: 1, cheese: 1, tomato_sauce: 1 } },
-            { id: 'icecream', name: 'Ice Cream Sundae', icon: '🍦', basePrice: 180, requiredLevel: 3, type: 'product', recipe: { icecream_base: 2, syrup: 1 } },
+            { id: 'pizza', name: 'Pizza', icon: '🍕', basePrice: 250, requiredLevel: 3, type: 'product', recipe: { dough: 2, cheese: 2, tomato_sauce: 2 } },
+            { id: 'icecream', name: 'Ice Cream Sundae', icon: '🍦', basePrice: 180, requiredLevel: 3, type: 'product', recipe: { icecream_base: 3, syrup: 2 } },
 
             // L4 解鎖商品 
-            { id: 'salad', name: 'Salad', icon: '🥗', basePrice: 180, requiredLevel: 4, type: 'product', recipe: { lettuce: 2, dressing: 1, chicken: 1 } },
-            { id: 'coffee', name: 'Coffee', icon: '☕', basePrice: 120, requiredLevel: 4, type: 'product', recipe: { coffee_bean: 1, milk: 1 } },
+            { id: 'salad', name: 'Salad', icon: '🥗', basePrice: 180, requiredLevel: 4, type: 'product', recipe: { lettuce: 3, dressing: 2, chicken: 2 } },
+            { id: 'coffee', name: 'Coffee', icon: '☕', basePrice: 120, requiredLevel: 4, type: 'product', recipe: { coffee_bean: 2, milk: 2 } },
 
             // L5 解鎖商品 
-            { id: 'taco', name: 'Taco', icon: '🌮', basePrice: 350, requiredLevel: 5, type: 'product', recipe: { tortilla: 2, beef: 1, cheese: 1, sauce: 1 } },
-            { id: 'sushi', name: 'Sushi Set', icon: '🍣', basePrice: 400, requiredLevel: 5, type: 'product', recipe: { rice: 2, fish: 1 } },
+            { id: 'taco', name: 'Taco', icon: '🌮', basePrice: 350, requiredLevel: 5, type: 'product', recipe: { tortilla: 3, beef: 2, cheese: 2, sauce: 2 } },
+            { id: 'sushi', name: 'Sushi Set', icon: '🍣', basePrice: 400, requiredLevel: 5, type: 'product', recipe: { rice: 3, fish: 2 } },
         ];
 
         // 原料列表 (Ingredients) - Costs Diamonds 💎
@@ -703,9 +703,9 @@ const vocabData = {
         let playerBadges = 0; // Start with 0
         let newlyEarnedRice = 0; // Trigger for happy animation
 
-        // Family Rice Distribution
+        // Family Rice Distribution - Lowered One Piece requirements
         let familyRice = { family: 0, luffy: 0, zoro: 0, chopper: 0, sanji: 0, nami: 0 };
-        const FAMILY_RICE_GOALS = { family: 30, luffy: 80, zoro: 60, chopper: 45, sanji: 35, nami: 20 };
+        const FAMILY_RICE_GOALS = { family: 30, luffy: 40, zoro: 30, chopper: 25, sanji: 20, nami: 15 };
         let charityDonations = 0; // Infinite goal
 
         const levelThresholds = [4000, 9000, 18000, 30000, 60000, 150000, 300000, 600000, 1500000, 5000000]; 
@@ -1079,9 +1079,9 @@ const vocabData = {
                 totalMultiplier += facilityUpgrades.find(f => f.id === 'reg_boost').levels[i].price_multiplier;
             }
             
-            // Crew Buffs!
+            // Crew Buffs! (Luffy adjusted to 10%)
             if (familyRice.sanji >= FAMILY_RICE_GOALS.sanji) totalMultiplier += 0.03;
-            if (familyRice.luffy >= FAMILY_RICE_GOALS.luffy) totalMultiplier += 0.20;
+            if (familyRice.luffy >= FAMILY_RICE_GOALS.luffy) totalMultiplier += 0.10;
 
             return totalMultiplier;
         }
@@ -1387,7 +1387,7 @@ const vocabData = {
             }
 
             const buffTexts = {
-                nami: '食材 -5%', sanji: '售價 +3%', chopper: '單字額外 +3💎', zoro: '單字額外 +5💎', luffy: '客人飛快/售價+20%'
+                nami: '食材 -5%', sanji: '售價 +3%', chopper: '單字額外 +3💎', zoro: '單字額外 +5💎', luffy: '客人飛快/售價+10%'
             };
 
             // id = visual id (e.g. 'dad'), dataId = logic id (e.g. 'family')
@@ -1770,7 +1770,7 @@ const vocabData = {
                 
                 if (card1.dataset.matchId === card2.dataset.matchId) {
                     playSFX('correct');
-                    const reward = getDiamondReward(2); // Reduced from 5
+                    const reward = getDiamondReward(4); // Increased to 4
                     
                     if (isStageFatigued(currentWeek, 1)) {
                         messageBox.innerHTML = `⚡️ Match Success: ${card1.dataset.matchId.toLowerCase()}! <span class="text-red-300">⚠️ 關卡疲勞，無鑽石獎勵！</span>`;
@@ -1893,7 +1893,7 @@ const vocabData = {
                 
                 if (card1.dataset.matchId === card2.dataset.matchId) {
                     playSFX('correct');
-                    const reward = getDiamondReward(4); // Reduced from 10
+                    const reward = getDiamondReward(6); // Increased to 6
                     
                     if (isStageFatigued(currentWeek, 2)) {
                         messageBox.innerHTML = `⭐️ Perfect Match! ${card1.dataset.matchId.toLowerCase()}! <span class="text-red-300">⚠️ 關卡疲勞，無鑽石獎勵！</span>`;
